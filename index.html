@@ -1,0 +1,1779 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font-size:14px;font-family:system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>單字生活線</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Noto+Sans+TC:wght@400;500;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: a transit route map. Each scene is a station on one line; lines carry their own color and code. */
+:root{
+  --bg:#EDF1F3; --surface:#FFFFFF; --sunk:#E3E9ED; --ink:#15202A; --muted:#566571; --rule:#CCD5DC;
+  --accent:#0E6E8C; --accent-ink:#FFFFFF;
+  --good:#1F8A4C; --good-bg:#E2F3E8; --bad:#C2363F; --bad-bg:#FBE6E7; --warn:#B7791F;
+  --l-o:#D9731A; --l-b:#1F5FC4; --l-g:#25875A; --l-r:#C7313C; --l-br:#8B5A2B; --l-p:#7547B0;
+  --f-display:"Bricolage Grotesque","Noto Sans TC",system-ui,sans-serif;
+  --f-body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  --r:14px; --on-line:#FFFFFF;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0F161C; --surface:#18222A; --sunk:#111A20; --ink:#E7EEF2; --muted:#93A3AE; --rule:#2B3944;
+  --accent:#4DB6D6; --accent-ink:#0B1418;
+  --good:#4CC27F; --good-bg:#16301F; --bad:#F06C74; --bad-bg:#3A1A1D; --warn:#E3A84B;
+  --l-o:#F0913F; --l-b:#5B93EE; --l-g:#4CB884; --l-r:#EE5F68; --l-br:#C08B57; --l-p:#A586E0; --on-line:#0F161C;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0F161C; --surface:#18222A; --sunk:#111A20; --ink:#E7EEF2; --muted:#93A3AE; --rule:#2B3944;
+  --accent:#4DB6D6; --accent-ink:#0B1418;
+  --good:#4CC27F; --good-bg:#16301F; --bad:#F06C74; --bad-bg:#3A1A1D; --warn:#E3A84B;
+  --l-o:#F0913F; --l-b:#5B93EE; --l-g:#4CB884; --l-r:#EE5F68; --l-br:#C08B57; --l-p:#A586E0; --on-line:#0F161C;
+  color-scheme:dark}
+*{box-sizing:border-box}
+html,body{min-height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 48px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1040px;margin:0 auto}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.2}
+.en{font-family:var(--f-display)}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.label{font-size:12px;letter-spacing:.08em;color:var(--muted);font-weight:500}
+
+/* top bar */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:14px 10px;border-bottom:1px solid var(--rule)}
+.top-in{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;margin-right:auto}
+.brand-mark{width:34px;height:34px;flex:none}
+.brand h1{font-size:22px;font-weight:800;letter-spacing:-.01em}
+.brand small{display:block;font-size:12px;color:var(--muted);font-family:var(--f-body);font-weight:400;letter-spacing:.02em}
+.lvl{display:flex;align-items:center;gap:10px;min-width:0}
+.lvl-badge{font-family:var(--f-mono);font-weight:700;font-size:13px;background:var(--ink);color:var(--bg);border-radius:6px;padding:3px 8px;white-space:nowrap}
+.lvl-meta{min-width:0}
+.lvl-name{font-size:13px;font-weight:700;white-space:nowrap}
+.xpbar{width:150px;max-width:38vw;height:6px;border-radius:99px;background:var(--sunk);overflow:hidden;margin-top:3px}
+.xpbar i{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width .4s}
+.xptext{font-size:11px;color:var(--muted)}
+.streak{font-size:13px;color:var(--muted);white-space:nowrap}
+.streak b{color:var(--ink);font-family:var(--f-mono)}
+.tabs{display:flex;gap:4px;margin-top:10px;overflow-x:auto}
+.tab{border:0;background:transparent;padding:6px 12px;border-radius:8px;color:var(--muted);font-weight:500;white-space:nowrap}
+.tab[aria-current="page"]{background:var(--surface);color:var(--ink);box-shadow:0 0 0 1px var(--rule)}
+.tab .pill{margin-left:6px}
+
+main{padding-top:22px}
+.view[hidden]{display:none!important}
+
+.pill{display:inline-block;font-size:11px;font-weight:700;border-radius:99px;padding:1px 8px;background:var(--bad-bg);color:var(--bad);font-family:var(--f-mono)}
+.btn{border:1px solid var(--rule);background:var(--surface);border-radius:10px;padding:8px 14px;font-weight:500;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:700}
+.btn.ghost{background:transparent}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.btn.small{padding:5px 10px;font-size:13px;border-radius:8px}
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:18px}
+
+/* home */
+.home-grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:820px){.home-grid{grid-template-columns:1fr}}
+.route-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+.route-head h2{font-size:26px;font-weight:800}
+.route-head p{margin:0;color:var(--muted);font-size:13px}
+.route{list-style:none;margin:14px 0 0;padding:0;position:relative}
+.stop{display:grid;grid-template-columns:44px minmax(0,1fr);gap:14px;position:relative;padding-bottom:18px}
+.stop:last-child{padding-bottom:0}
+.rail{position:relative;display:flex;justify-content:center}
+.rail::before{content:"";position:absolute;top:0;bottom:-18px;width:8px;border-radius:4px;background:var(--line)}
+.stop:last-child .rail::before{bottom:0}
+.stop:first-child .rail::before{top:20px}
+.node{position:relative;margin-top:14px;width:36px;height:36px;border-radius:50%;background:var(--surface);border:5px solid var(--line);display:grid;place-items:center;font-family:var(--f-mono);font-size:11px;font-weight:700;color:var(--line)}
+.stop.done .node{background:var(--line);color:var(--on-line)}
+.stop-body{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:14px 16px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.stop-title{min-width:0;flex:1 1 180px}
+.stop-title h3{font-size:19px;font-weight:700}
+.stop-title h3 span{font-family:var(--f-body);font-size:14px;color:var(--muted);font-weight:500;margin-left:6px}
+.stop-title p{margin:2px 0 0;font-size:13px;color:var(--muted)}
+.stars{font-family:var(--f-mono);letter-spacing:2px;color:var(--warn);font-size:14px}
+.stars .off{color:var(--rule)}
+.stop-actions{display:flex;gap:8px;flex-wrap:wrap}
+.lock{font-size:12px;color:var(--muted)}
+
+.side{display:grid;gap:16px}
+.side h3{font-size:16px;margin-bottom:8px}
+.goal{display:flex;gap:14px;align-items:center}
+.ring{width:70px;height:70px;flex:none}
+.goal p{margin:0;font-size:13px;color:var(--muted)}
+.goal strong{font-size:24px;font-family:var(--f-mono);color:var(--ink)}
+.badges{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.badge{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;font-size:11px;color:var(--muted);line-height:1.3}
+.badge svg{width:40px;height:40px}
+.badge.on{color:var(--ink);font-weight:500}
+.badge:not(.on) svg{opacity:.28;filter:grayscale(1)}
+
+/* dialogue */
+.scene-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.scene-head .code{font-family:var(--f-mono);font-weight:700;color:var(--on-line);background:var(--line);border-radius:6px;padding:2px 8px}
+.scene-head h2{font-size:24px;font-weight:800}
+.scene-head .grow{flex:1}
+.progress{height:6px;background:var(--sunk);border-radius:99px;overflow:hidden;margin-bottom:16px}
+.progress i{display:block;height:100%;background:var(--line);transition:width .3s}
+.stage{max-width:720px;margin:0 auto}
+.chat{display:flex;flex-direction:column;gap:12px;min-height:200px}
+.msg{display:flex;flex-direction:column;max-width:86%;gap:2px;animation:pop .25s ease-out}
+.msg.me{align-self:flex-end;align-items:flex-end}
+.who{font-size:12px;color:var(--muted)}
+.bubble{background:var(--surface);border:1px solid var(--rule);border-radius:16px 16px 16px 4px;padding:10px 14px;display:flex;gap:10px;align-items:flex-start}
+.msg.me .bubble{background:var(--line);color:var(--on-line);border-color:transparent;border-radius:16px 16px 4px 16px}
+.bubble .t{font-family:var(--f-display);font-size:18px;line-height:1.45;font-weight:500;min-width:0;overflow-wrap:anywhere}
+.zh{font-size:13px;color:var(--muted)}
+.msg.me .zh{text-align:right}
+.blank{display:inline-block;min-width:4.5em;border-bottom:3px dashed currentColor;text-align:center;opacity:.85}
+.filled{border-radius:6px;padding:0 6px;font-weight:700;background:rgba(255,255,255,.22)}
+.msg:not(.me) .filled{background:var(--good-bg);color:var(--good)}
+.say{flex:none;border:0;background:transparent;padding:2px;margin-top:2px;opacity:.75;color:inherit;border-radius:6px}
+.say:hover{opacity:1}
+.say svg{width:20px;height:20px;display:block}
+.choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:18px}
+@media (max-width:460px){.choices{grid-template-columns:1fr}}
+.choice{border:2px solid var(--rule);background:var(--surface);border-radius:12px;padding:12px 14px;font-family:var(--f-display);font-size:18px;font-weight:600;text-align:left}
+.choice:hover:not([disabled]){border-color:var(--line,var(--accent))}
+.choice.right{border-color:var(--good);background:var(--good-bg);color:var(--good)}
+.choice.wrong{border-color:var(--bad);background:var(--bad-bg);color:var(--bad);animation:shake .3s}
+.choice[disabled]{cursor:default}
+.feedback{margin-top:14px;border-radius:12px;padding:12px 14px;background:var(--sunk);font-size:14px}
+.feedback b{font-family:var(--f-display);font-size:16px}
+.feedback .tip{display:block;margin-top:4px;color:var(--muted)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:14px}
+.result{text-align:center;padding:26px 18px}
+.result h3{font-size:28px;margin:6px 0}
+.result .big{font-size:40px;letter-spacing:6px}
+.result .row{justify-content:center}
+
+/* AI */
+.targets{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 14px}
+.tchip{font-family:var(--f-display);font-size:14px;border:1.5px dashed var(--rule);border-radius:99px;padding:2px 10px;color:var(--muted)}
+.tchip.used{border-style:solid;border-color:var(--good);background:var(--good-bg);color:var(--good);font-weight:600}
+.fix{margin-top:4px;font-size:13px;background:var(--sunk);border-left:3px solid var(--warn);border-radius:0 8px 8px 0;padding:6px 10px;max-width:100%}
+.fix s{color:var(--bad)}
+.fix b{color:var(--good);font-family:var(--f-display)}
+.praise{font-size:12px;color:var(--good);font-weight:700}
+.compose{display:flex;gap:8px;margin-top:16px;position:sticky;bottom:0;background:var(--bg);padding-block:10px calc(10px + env(safe-area-inset-bottom,0px))}
+.compose input{flex:1;min-width:0;border:1.5px solid var(--rule);border-radius:12px;background:var(--surface);color:var(--ink);padding:10px 14px;font-family:var(--f-display);font-size:17px}
+.hintline{font-size:13px;color:var(--muted);margin-top:4px}
+.thinking{font-size:13px;color:var(--muted);font-style:italic}
+.notice{border:1px dashed var(--rule);border-radius:12px;padding:14px;color:var(--muted);font-size:14px}
+
+/* review */
+.review-top{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:18px}
+@media (max-width:600px){.review-top{grid-template-columns:1fr}}
+.mode{display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.mode h3{font-size:17px}
+.mode p{margin:0;font-size:13px;color:var(--muted);flex:1}
+.qcard{max-width:640px;margin:0 auto}
+.qcard .sent{font-family:var(--f-display);font-size:22px;line-height:1.45;font-weight:500;margin:6px 0 4px}
+.spell{display:flex;gap:8px;margin-top:16px}
+.spell input{flex:1;min-width:0;border:2px solid var(--rule);border-radius:12px;background:var(--surface);color:var(--ink);padding:10px 14px;font-family:var(--f-display);font-size:20px}
+.wlist{width:100%;border-collapse:collapse;font-size:14px}
+.wlist th{text-align:left;font-weight:500;color:var(--muted);font-size:12px;letter-spacing:.06em;padding:6px 8px;border-bottom:1px solid var(--rule)}
+.wlist td{padding:8px;border-bottom:1px solid var(--rule);vertical-align:top}
+.wlist td.w{font-family:var(--f-display);font-weight:700;font-size:16px;white-space:nowrap}
+.tablewrap{overflow-x:auto}
+.boxes{display:inline-flex;gap:3px}
+.boxes i{width:8px;height:8px;border-radius:2px;background:var(--rule)}
+.boxes i.on{background:var(--good)}
+
+/* report */
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:14px 0 18px}
+@media (max-width:700px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.kpi .label{display:block}
+.kpi strong{display:block;font-family:var(--f-mono);font-size:26px;font-weight:700;margin-top:2px}
+.kpi span.sub{font-size:12px;color:var(--muted)}
+.rep-grid{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:820px){.rep-grid{grid-template-columns:1fr}}
+.rep-grid h3{font-size:16px;margin-bottom:10px}
+.chart svg{width:100%;height:auto;display:block}
+.lines-prog{display:grid;gap:10px}
+.lp{display:grid;grid-template-columns:90px minmax(0,1fr) 44px;gap:10px;align-items:center;font-size:13px}
+.lp .bar{height:8px;background:var(--sunk);border-radius:99px;overflow:hidden}
+.lp .bar i{display:block;height:100%;background:var(--line)}
+.lp .mono{text-align:right;font-size:12px}
+.copybox{width:100%;min-height:150px;border:1px solid var(--rule);border-radius:10px;background:var(--sunk);color:var(--ink);padding:10px;font-family:var(--f-body);font-size:13px;resize:vertical}
+.muted{color:var(--muted)}
+/* my words */
+.custom-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:820px){.custom-grid{grid-template-columns:1fr}}
+.field{display:flex;flex-direction:column;gap:4px;margin-bottom:12px}
+.field label{font-size:13px;font-weight:500}
+.field input,.wordsin{border:1.5px solid var(--rule);border-radius:10px;background:var(--surface);color:var(--ink);padding:9px 12px;font:inherit}
+.wordsin{min-height:240px;resize:vertical;font-family:var(--f-body);font-size:15px;line-height:1.7}
+.fmt{font-size:13px;color:var(--muted);background:var(--sunk);border-radius:10px;padding:10px 12px;margin:0 0 12px}
+.fmt code{font-family:var(--f-mono);font-size:12.5px;color:var(--ink)}
+.parse{font-size:13px;margin-top:8px;min-height:1.6em}
+.parse .bad{color:var(--bad)}
+.parse .ok{color:var(--good)}
+.groups{display:grid;gap:12px}
+.grp{display:flex;flex-direction:column;gap:8px}
+.grp-top{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.grp-top h3{font-size:18px;font-family:var(--f-body);font-weight:700}
+.grp-top .sub{font-size:13px;color:var(--muted)}
+.grp .bar{height:6px;background:var(--sunk);border-radius:99px;overflow:hidden}
+.grp .bar i{display:block;height:100%;background:var(--accent)}
+.grp-words{font-family:var(--f-display);font-size:14px;color:var(--muted);overflow-wrap:anywhere}
+/* sentences */
+.zhq{font-family:var(--f-body);font-size:20px;font-weight:700}
+.built{min-height:58px;border:2px dashed var(--rule);border-radius:12px;padding:8px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:10px}
+.built .ph{color:var(--muted);font-size:13px}
+.pool{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;min-height:40px}
+.chip{border:1.5px solid var(--rule);background:var(--surface);border-radius:8px;padding:6px 10px;font-family:var(--f-display);font-size:17px;font-weight:600}
+.built .chip{background:var(--sunk);border-color:var(--accent)}
+.endmark{font-family:var(--f-display);font-size:20px;font-weight:700}
+.sitem{padding:12px 0;border-top:1px solid var(--rule)}
+.s-en{font-family:var(--f-display);font-size:18px;font-weight:600;line-height:1.45;overflow-wrap:anywhere}
+.s-zh{color:var(--muted);font-size:14px;margin-top:2px;display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.srcchip{font-size:11px;border:1px solid var(--rule);border-radius:99px;padding:0 8px;color:var(--muted);white-space:nowrap}
+.srcchip.srcbook{border-color:var(--accent);color:var(--accent);font-weight:700}
+.s-note{font-size:13px;background:var(--sunk);border-radius:8px;padding:6px 10px;margin-top:6px}
+.wlist.study td.w{white-space:normal;width:44%}
+.wlist td.sentcell{white-space:normal;min-width:220px;font-size:15px}
+/* reading */
+#rdBody{display:grid;gap:16px}
+.rd-h{font-size:16px;margin-bottom:8px}
+.rd-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:10px 0;border-top:1px solid var(--rule)}
+.rd-info{flex:1 1 200px;min-width:0}
+.rd-title{font-weight:700;font-size:16px;overflow-wrap:anywhere}
+.rd-status{margin-top:10px;font-size:13px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;color:var(--muted)}
+.seg{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.segb{border:1px solid var(--rule);background:var(--surface);border-radius:99px;padding:4px 12px;font-size:13px}
+.segb[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.rd-ptitle{font-size:20px;font-weight:800;margin-right:auto}
+.passage{font-family:var(--f-display);font-size:18px;line-height:1.75;margin-top:8px;overflow-wrap:anywhere}
+.passage p{margin:0 0 8px}
+.passage .spk{font-weight:800;margin-right:6px}
+.passage .dir{font-style:italic;color:var(--muted)}
+.kw{border:0;background:none;padding:0;font:inherit;color:inherit;border-bottom:2px solid var(--accent);border-radius:0;cursor:pointer}
+.qlist{display:grid;gap:14px}
+.q h4{font-family:var(--f-display);font-size:17px;font-weight:600;margin:0 0 10px;line-height:1.45}
+.q .choices{grid-template-columns:1fr;gap:8px;margin-top:0}
+.q .choice{font-size:16px;padding:9px 12px;font-weight:500}
+.q .feedback{margin-top:10px}
+.linkbtn{border:0;background:none;color:var(--muted);text-decoration:underline;font-size:12px;padding:0;margin-top:6px;display:inline-block}
+.empty{border:1.5px dashed var(--rule);border-radius:var(--r);padding:22px;color:var(--muted);font-size:14px}
+.small{font-size:13px}
+
+/* overlay + toast */
+.overlay{position:fixed;inset:0;background:rgba(10,16,20,.5);display:grid;place-items:center;z-index:20;padding:16px}
+.dialog{max-width:380px;width:100%}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:14px;font-weight:500;z-index:30;max-width:calc(100% - 32px);box-shadow:0 6px 24px rgba(0,0,0,.25);animation:pop .25s ease-out}
+@keyframes pop{from{transform:translateY(6px);opacity:.3}to{transform:none;opacity:1}}
+.toast{animation:none}
+@keyframes shake{0%,100%{transform:none}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <div class="top-in">
+      <div class="brand">
+        <svg class="brand-mark" viewBox="0 0 34 34" aria-hidden="true"><rect x="2" y="14" width="30" height="6" rx="3" fill="var(--l-b)"/><rect x="14" y="2" width="6" height="30" rx="3" fill="var(--l-o)"/><circle cx="17" cy="17" r="7" fill="var(--surface)" stroke="var(--ink)" stroke-width="3"/></svg>
+        <div><h1>單字生活線</h1><small>國中會考 2000 字 · 情境對話闖關</small></div>
+      </div>
+      <div class="lvl">
+        <span class="lvl-badge" id="lvlNum">Lv.1</span>
+        <div class="lvl-meta"><div class="lvl-name" id="lvlName">見習乘客</div><div class="xpbar"><i id="xpFill" style="width:0"></i></div><div class="xptext mono" id="xpText">0 / 100 XP</div></div>
+      </div>
+      <div class="streak">連續練習 <b id="streakNum">0</b> 天</div>
+    </div>
+    <nav class="tabs" aria-label="主選單">
+      <button class="tab" data-tab="home" aria-current="page">路線圖</button>
+      <button class="tab" data-tab="custom">我的單字</button>
+      <button class="tab" data-tab="review">錯題複習<span class="pill" id="duePill" hidden>0</span></button>
+      <button class="tab" data-tab="report">家長報表</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- HOME -->
+  <section class="view" id="v-home">
+    <div class="home-grid">
+      <div>
+        <div class="route-head">
+          <h2 class="en">Daily Life Line</h2>
+          <p>依站序完成劇本，通過後解鎖該站的 AI 自由對話</p>
+        </div>
+        <ol class="route" id="route"></ol>
+      </div>
+      <aside class="side">
+        <div class="card">
+          <h3>今日目標</h3>
+          <div class="goal">
+            <svg class="ring" viewBox="0 0 70 70" aria-hidden="true"><circle cx="35" cy="35" r="29" fill="none" stroke="var(--sunk)" stroke-width="8"/><circle id="ringArc" cx="35" cy="35" r="29" fill="none" stroke="var(--accent)" stroke-width="8" stroke-linecap="round" stroke-dasharray="182.2" stroke-dashoffset="182.2" transform="rotate(-90 35 35)"/></svg>
+            <div><strong id="goalNum">0</strong><span class="muted mono"> / 20 題</span><p id="goalMsg">今天還沒開始，從第一站出發吧。</p></div>
+          </div>
+        </div>
+        <div class="card">
+          <h3>我的單字</h3>
+          <p class="small muted" id="myMsg" style="margin:0 0 10px">把課本的單字表貼進來，就能練習和跟 AI 對話。</p>
+          <button class="btn small" id="goCustom">管理單字</button>
+        </div>
+        <div class="card">
+          <h3>錯題本</h3>
+          <p class="small muted" id="dueMsg" style="margin:0 0 10px">目前沒有錯題。</p>
+          <button class="btn primary small" id="goReview">開始複習</button>
+        </div>
+        <div class="card">
+          <h3>徽章</h3>
+          <div class="badges" id="badges"></div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- SCENE -->
+  <section class="view" id="v-scene" hidden>
+    <div class="stage">
+      <div class="scene-head">
+        <span class="code" id="sCode">O1</span>
+        <h2 class="en" id="sTitle">Breakfast Shop</h2>
+        <span class="muted" id="sZh">早餐店</span>
+        <span class="grow"></span>
+        <button class="btn small ghost" id="sExit">離開</button>
+      </div>
+      <div class="progress"><i id="sProg" style="width:0"></i></div>
+      <div class="chat" id="sChat" aria-live="polite"></div>
+      <div id="sPanel"></div>
+    </div>
+  </section>
+
+  <!-- AI -->
+  <section class="view" id="v-ai" hidden>
+    <div class="stage">
+      <div class="scene-head">
+        <span class="code" id="aCode">O1</span>
+        <h2 class="en" id="aTitle">Free Talk</h2>
+        <span class="muted" id="aZh"></span>
+        <span class="grow"></span>
+        <button class="btn small" id="aEnd">結束對話</button>
+      </div>
+      <div class="label">這次要用到的單字片語（用對會亮起來）</div>
+      <div class="targets" id="aTargets"></div>
+      <div class="chat" id="aChat" aria-live="polite"></div>
+      <div id="aNotice"></div>
+      <form class="compose" id="aForm" autocomplete="off">
+        <input id="aInput" placeholder="用英文回答，例如 I'd like a sandwich." maxlength="200" aria-label="輸入英文">
+        <button class="btn primary" id="aSend" type="submit">送出</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- REVIEW -->
+  <section class="view" id="v-review" hidden>
+    <div id="rHome">
+      <div class="review-top">
+        <div class="card mode"><span class="label">間隔複習</span><h3>今天該複習的錯題</h3><p id="rDueText">0 題到期</p><button class="btn primary small" id="rStartDue">開始</button></div>
+        <div class="card mode"><span class="label">拼字挑戰</span><h3>看中文拼出單字</h3><p>從已通過的站和我的單字隨機抽 10 題，考拼字。</p><button class="btn small" id="rStartSpell">開始</button></div>
+        <div class="card mode"><span class="label">綜合練習</span><h3>全部錯題再練一次</h3><p id="rAllText">不管有沒有到期，全部錯題各練一次。</p><button class="btn small" id="rStartAll">開始</button></div>
+      </div>
+      <div class="card">
+        <h3 style="font-size:16px;margin-bottom:8px">錯題本</h3>
+        <p class="small muted" style="margin:0 0 10px">連續答對 3 次（綠格滿 3 格）就算精熟，會移出錯題本。</p>
+        <div class="tablewrap"><table class="wlist" id="rTable"></table></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PLAY (review & custom practice) -->
+  <section class="view" id="v-play" hidden><div id="rPlay"></div></section>
+
+  <!-- READING -->
+  <section class="view" id="v-read" hidden style="--line:var(--accent)">
+    <div class="stage">
+      <div class="scene-head">
+        <span class="code">RD</span>
+        <h2 id="rdTitle">閱讀測驗</h2>
+        <span class="muted" id="rdGroup"></span>
+        <span class="grow"></span>
+        <button class="btn small ghost" id="rdBack">回我的單字</button>
+      </div>
+      <div id="rdBody"></div>
+    </div>
+  </section>
+
+  <!-- MY WORDS -->
+  <section class="view" id="v-custom" hidden>
+    <div class="route-head"><h2>我的單字</h2><p>依課本單元建立，一課一組</p></div>
+    <div class="custom-grid" style="margin-top:14px">
+      <div class="card">
+        <h3 style="font-size:16px;margin-bottom:10px" id="cFormTitle">新增一組單字</h3>
+        <div class="field"><label for="cName">組名</label><input id="cName" maxlength="30" placeholder="例如：翰林 B3 L1"></div>
+        <p class="fmt">每行一個字，用逗號或 Tab 隔開：<br><code>英文, 中文, 例句</code>（例句可省略）<br>從 Excel 或 Google 試算表直接複製兩欄貼上也可以。</p>
+        <div class="field"><label for="cWords">單字</label>
+          <textarea class="wordsin" id="cWords" spellcheck="false" placeholder="borrow, 借入, Can I borrow your pen?&#10;be good at, 擅長&#10;excited, 興奮的"></textarea></div>
+        <div class="parse" id="cParse" aria-live="polite"></div>
+        <div class="field" style="margin-top:12px"><label for="cSents">佳句（選填）</label>
+          <p class="fmt" style="margin:0 0 6px">每行一句，用直線 | 隔開：<code>英文句子 | 中文 | 文法說明</code>（文法說明可省略）</p>
+          <textarea class="wordsin" id="cSents" spellcheck="false" style="min-height:110px" placeholder="My brother was playing basketball at four o'clock. | 四點的時候我哥哥正在打籃球。 | 過去進行式"></textarea></div>
+        <div class="parse" id="cSParse" aria-live="polite"></div>
+        <div class="row"><button class="btn primary" id="cSave">儲存</button><button class="btn ghost" id="cCancel" hidden>取消編輯</button></div>
+      </div>
+      <div><div class="groups" id="cGroups"></div></div>
+    </div>
+  </section>
+
+  <!-- REPORT -->
+  <section class="view" id="v-report" hidden>
+    <div class="route-head"><h2>學習報表</h2><p id="repDate"></p></div>
+    <div class="kpis" id="kpis"></div>
+    <div class="rep-grid">
+      <div class="card chart"><h3>近 14 天練習題數</h3><div id="chart14"></div></div>
+      <div class="card"><h3>各站進度</h3><div class="lines-prog" id="linesProg"></div></div>
+      <div class="card"><h3>最需要加強的字</h3><div class="tablewrap"><table class="wlist" id="weakTable"></table></div></div>
+      <div class="card"><h3>AI 對話常見錯誤</h3><div id="fixList" class="small"></div></div>
+      <div class="card" style="grid-column:1/-1">
+        <h3>可貼到 LINE 的摘要</h3>
+        <textarea class="copybox" id="summaryBox" readonly></textarea>
+        <div class="row"><button class="btn primary small" id="copySum">複製摘要</button><span class="small muted" id="copyMsg"></span><span style="flex:1"></span><button class="btn small ghost" id="resetBtn">清除所有進度</button></div>
+        <p class="small muted" id="syncNote" style="margin:10px 0 0"></p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div id="layer"></div>
+
+<script>
+(() => {
+"use strict";
+
+/* ========== DATA ========== */
+const SCENES = [
+ {id:"breakfast", code:"O", line:"--l-o", en:"Breakfast Shop", zh:"早餐店", npc:"老闆娘 Mrs. Lin",
+  role:"Mrs. Lin, the friendly owner of a Taiwanese breakfast shop", student:"a student ordering breakfast before school",
+  targets:["order","hungry","sandwich","a cup of","be late for","cheap","delicious"],
+  lines:[
+   {w:"npc",t:"Good morning! Are you ready to ___?",zh:"早安！準備好點餐了嗎？",a:"order",c:["order","return","forget","borrow"],m:"v. 點（餐）"},
+   {w:"me",t:"Yes. I'm so ___. I didn't eat dinner last night.",zh:"好了，我好餓，昨晚沒吃晚餐。",a:"hungry",c:["hungry","full","quiet","late"],m:"adj. 飢餓的"},
+   {w:"me",t:"I'd like a ham ___ and an egg, please.",zh:"我要一個火腿三明治和一顆蛋。",a:"sandwich",c:["sandwich","ticket","medicine","floor"],m:"n. 三明治"},
+   {w:"npc",t:"Sure. Anything to drink?",zh:"好的，要喝點什麼嗎？"},
+   {w:"me",t:"I'd like ___ milk tea.",zh:"我要一杯奶茶。",a:"a cup of",c:["a cup of","a pair of","a piece of","a few"],m:"片語 一杯…",tip:"a pair of 是「一雙」；a piece of 是「一片／一張」。"},
+   {w:"npc",t:"For here or to go?",zh:"內用還是外帶？"},
+   {w:"me",t:"To go, please. I'm ___ school.",zh:"外帶，我上學快遲到了。",a:"late for",c:["late for","good at","take care of","looking for"],m:"片語 be late for 遲到"},
+   {w:"npc",t:"Here you are. That's 55 dollars.",zh:"給你，一共 55 元。"},
+   {w:"me",t:"Wow, that's ___! Thank you.",zh:"哇，好便宜！謝謝。",a:"cheap",c:["cheap","sick","difficult","crowded"],m:"adj. 便宜的"},
+   {w:"npc",t:"You're welcome. Our sandwiches are very ___. Enjoy!",zh:"不客氣，我們的三明治很好吃喔，慢用！",a:"delicious",c:["delicious","angry","quiet","sick"],m:"adj. 美味的"}
+ ]},
+ {id:"school", code:"B", line:"--l-b", en:"Classroom", zh:"教室", npc:"同學 Amy",
+  role:"Amy, a kind classmate in a Taiwanese junior high school", student:"Amy's classmate talking about math homework",
+  targets:["homework","difficult","worry","be good at","borrow","hand in","forget"],
+  lines:[
+   {w:"npc",t:"Hey! Did you finish the math ___?",zh:"嘿！你數學作業寫完了嗎？",a:"homework",c:["homework","breakfast","station","medicine"],m:"n. 家庭作業"},
+   {w:"me",t:"No. It was too ___ for me.",zh:"還沒，對我來說太難了。",a:"difficult",c:["difficult","delicious","hungry","crowded"],m:"adj. 困難的"},
+   {w:"npc",t:"Don't ___.",zh:"別擔心。",a:"worry",c:["worry","cheap","sandwich","hungry"],m:"v. 擔心",tip:"Don't 後面接原形動詞。"},
+   {w:"npc",t:"I'm ___ math. I can help you.",zh:"我數學很好，我可以幫你。",a:"good at",c:["good at","look for","take care of","a cup of"],m:"片語 be good at 擅長"},
+   {w:"me",t:"Thanks! Can I ___ your notebook?",zh:"謝謝！我可以借你的筆記本嗎？",a:"borrow",c:["borrow","lend","worry","smell"],m:"v. 借（入）",tip:"borrow 是「向別人借」，lend 是「借給別人」。"},
+   {w:"npc",t:"Sure. But we have to ___ the homework tomorrow.",zh:"好啊，但我們明天要交作業喔。",a:"hand in",c:["hand in","get off","come true","fall asleep"],m:"片語 繳交"},
+   {w:"me",t:"I won't ___. Thank you so much!",zh:"我不會忘記的，非常謝謝你！",a:"forget",c:["forget","forgot","forgets","forgetting"],m:"v. 忘記",tip:"won't（will not）後面接原形動詞。"}
+ ]},
+ {id:"library", code:"G", line:"--l-g", en:"Library", zh:"圖書館", npc:"館員 Mr. Chen",
+  role:"Mr. Chen, a helpful librarian at a school library", student:"a student looking for a book",
+  targets:["look for","be interested in","floor","quiet","return","take care of"],
+  lines:[
+   {w:"me",t:"Excuse me. I'm ___ a book about birds.",zh:"不好意思，我在找一本關於鳥的書。",a:"looking for",c:["looking for","getting off","coming true","falling asleep"],m:"片語 look for 尋找",tip:"look for 是「找」的過程；find 是「找到」。"},
+   {w:"npc",t:"Sure. Are you ___ in birds?",zh:"好的，你對鳥有興趣嗎？",a:"interested",c:["interested","interesting","interest","interests"],m:"adj. 感興趣的",tip:"人「對…感興趣」用 interested；事物「有趣」用 interesting。"},
+   {w:"me",t:"Yes! I think birds are so cute.",zh:"對！我覺得鳥好可愛。"},
+   {w:"npc",t:"The bird books are on the third ___.",zh:"鳥類的書在三樓。",a:"floor",c:["floor","station","minute","dollar"],m:"n. 樓層"},
+   {w:"npc",t:"And please keep ___ in the library.",zh:"還有，在圖書館裡請保持安靜。",a:"quiet",c:["quiet","quite","quit","quietly"],m:"adj. 安靜的",tip:"keep + 形容詞；quite 是「相當」，quit 是「放棄」。"},
+   {w:"me",t:"Sorry! How long can I keep the book?",zh:"抱歉！這本書可以借多久？"},
+   {w:"npc",t:"Two weeks. Please ___ it on time.",zh:"兩週，請準時歸還。",a:"return",c:["return","cheap","floor","hungry"],m:"v. 歸還"},
+   {w:"me",t:"OK. I'll take good ___ of it.",zh:"好的，我會好好愛護它。",a:"care",c:["care","careful","carefully","cares"],m:"n. take care of 照顧",tip:"take care of 照顧、愛護；careful 是形容詞「小心的」。"}
+ ]},
+ {id:"market", code:"R", line:"--l-r", en:"Night Market", zh:"夜市", npc:"朋友 Ben、攤販老闆",
+  role:"a friendly food stand owner at a Taiwanese night market (the student's friend Ben is also there)", student:"a student visiting the night market",
+  targets:["a lot of","crowded","smell","try","how much","dollar","expensive","hot"],
+  lines:[
+   {w:"me",t:"Wow, there are ___ people here!",zh:"哇，這裡人好多！",a:"a lot of",c:["a lot of","a cup of","a piece of","a little"],m:"片語 許多",tip:"a little 接不可數名詞；people 可數，用 a lot of 或 many。"},
+   {w:"npc",n:"Ben",t:"Yeah, it's always ___ on weekends.",zh:"對啊，週末總是很擠。",a:"crowded",c:["crowded","crowd","crowds","crowding"],m:"adj. 擁擠的"},
+   {w:"me",t:"What's that? It ___ so good!",zh:"那是什麼？聞起來好香！",a:"smells",c:["smells","smell","smelling","to smell"],m:"v. 聞起來",tip:"主詞 It 是第三人稱單數，現在式動詞要加 s。"},
+   {w:"npc",n:"老闆",t:"Stinky tofu! Do you want to ___ some?",zh:"臭豆腐！要不要吃吃看？",a:"try",c:["try","tries","trying","tried"],m:"v. 嘗試",tip:"want to 後面接原形動詞。"},
+   {w:"me",t:"___ is it?",zh:"多少錢？",a:"How much",c:["How much","How many","How old","How long"],m:"片語 多少（錢）",tip:"問價錢用 How much；How many 問數量。"},
+   {w:"npc",n:"老闆",t:"Sixty ___ for a plate.",zh:"一盤 60 元。",a:"dollars",c:["dollars","dollar","minutes","floors"],m:"n. 元",tip:"60 是複數，dollar 要加 s。"},
+   {w:"me",t:"That's not ___. I'll take one.",zh:"不貴耶，我要一份。",a:"expensive",c:["expensive","delicious","hungry","quiet"],m:"adj. 昂貴的"},
+   {w:"npc",n:"老闆",t:"Here you go. Be careful, it's ___!",zh:"給你，小心，很燙！",a:"hot",c:["hot","cold","cute","cheap"],m:"adj. 燙的、熱的"}
+ ]},
+ {id:"mrt", code:"BR", line:"--l-br", en:"MRT Station", zh:"捷運站", npc:"觀光客 Emma",
+  role:"Emma, a tourist visiting Taipei who needs directions at an MRT station", student:"a local student helping Emma",
+  targets:["take","far","minute","get off","ticket","in front of","welcome"],
+  lines:[
+   {w:"npc",t:"Excuse me. How do I get to Taipei 101?",zh:"不好意思，請問台北 101 怎麼去？"},
+   {w:"me",t:"You can ___ the MRT. Take the red line.",zh:"你可以搭捷運，搭紅線。",a:"take",c:["take","takes","taking","took"],m:"v. 搭乘",tip:"can 後面接原形動詞；搭交通工具用 take。"},
+   {w:"npc",t:"Is it ___ from here?",zh:"離這裡遠嗎？",a:"far",c:["far","near","late","hot"],m:"adj. 遠的",tip:"be far from 離…很遠；near 後面不加 from。"},
+   {w:"me",t:"No. It only takes about fifteen ___.",zh:"不遠，大約只要 15 分鐘。",a:"minutes",c:["minutes","minute","dollars","floors"],m:"n. 分鐘"},
+   {w:"me",t:"___ at Taipei 101 Station.",zh:"在台北 101 站下車。",a:"Get off",c:["Get off","Get on","Turn off","Take off"],m:"片語 下車",tip:"get on 上車、get off 下車；turn off 關掉；take off 脫掉／起飛。"},
+   {w:"npc",t:"Thanks! Where can I buy a ___?",zh:"謝謝！哪裡可以買票？",a:"ticket",c:["ticket","tickets","station","minute"],m:"n. 票",tip:"a 後面接單數名詞。"},
+   {w:"me",t:"The ticket machine is right ___ you.",zh:"售票機就在你前面。",a:"in front of",c:["in front of","in the front","next","behind of"],m:"片語 在…前面",tip:"behind 本身就是「在…後面」，不加 of。"},
+   {w:"npc",t:"Thank you so much!",zh:"真的很謝謝你！"},
+   {w:"me",t:"You're ___. Have a nice trip!",zh:"不客氣，旅途愉快！",a:"welcome",c:["welcome","welcomes","welcoming","well"],m:"You're welcome. 不客氣"}
+ ]},
+ {id:"clinic", code:"P", line:"--l-p", en:"Clinic", zh:"診所", npc:"王醫生 Dr. Wang",
+  role:"Dr. Wang, a gentle family doctor at a small clinic", student:"a student who is sick",
+  targets:["matter","headache","catch a cold","medicine","should","rest","feel"],
+  lines:[
+   {w:"npc",t:"Hi. What's the ___?",zh:"你好，怎麼了？",a:"matter",c:["matter","matters","minute","floor"],m:"n. What's the matter? 怎麼了？"},
+   {w:"me",t:"I have a ___ and a fever.",zh:"我頭痛，還發燒。",a:"headache",c:["headache","head","hurt","hungry"],m:"n. 頭痛"},
+   {w:"npc",t:"Let me see... I think you ___ a cold.",zh:"我看看…你應該是感冒了。",a:"caught",c:["caught","catch","catches","catching"],m:"v. catch a cold 感冒",tip:"catch 的過去式是 caught。"},
+   {w:"npc",t:"Take this ___ three times a day.",zh:"這個藥一天吃三次。",a:"medicine",c:["medicine","homework","sandwich","ticket"],m:"n. 藥"},
+   {w:"me",t:"Can I go to school tomorrow?",zh:"我明天可以去上學嗎？"},
+   {w:"npc",t:"No. You ___ stay home and rest.",zh:"不行，你應該在家休息。",a:"should",c:["should","shouldn't","should to","must to"],m:"aux. 應該",tip:"should 後面直接接原形動詞，不加 to。"},
+   {w:"npc",t:"Drink a lot of water and get some ___.",zh:"多喝水，多休息。",a:"rest",c:["rest","rests","resting","rested"],m:"n. 休息"},
+   {w:"me",t:"Thank you, doctor. I hope I ___ better soon.",zh:"謝謝醫生，希望我很快就好起來。",a:"feel",c:["feel","fell","fill","feeling"],m:"v. 感覺",tip:"fell 是 fall 的過去式；fill 是「裝滿」。"},
+   {w:"npc",t:"Take care of yourself.",zh:"好好照顧自己。"}
+ ]}
+];
+const ITEMS = {};
+SCENES.forEach(s => s.lines.forEach((l, i) => { if (l.a) { l.id = s.id + "-" + i; ITEMS[l.id] = Object.assign({scene:s.id}, l); } }));
+const SCENE = Object.fromEntries(SCENES.map(s => [s.id, s]));
+
+const LEVELS = [0,100,250,450,700,1000,1400,1900,2500,3200,4000];
+const TITLES = ["見習乘客","通勤新手","熟門熟路","轉乘高手","單字站長","全線制霸"];
+const BOXDAYS = [0,1,2,4,7,15];
+const DAY = 86400000;
+const GOAL = 20;
+const BADGES = [
+  {id:"first", name:"首站通過", test:s=>Object.values(s.scenes).some(x=>x.cleared), color:"--l-o"},
+  {id:"all", name:"全線通車", test:s=>SCENES.every(x=>s.scenes[x.id]?.cleared), color:"--l-b"},
+  {id:"s3", name:"連續 3 天", test:s=>streak(s)>=3, color:"--l-g"},
+  {id:"s7", name:"連續 7 天", test:s=>streak(s)>=7, color:"--l-r"},
+  {id:"c100", name:"答對 100 題", test:s=>totals(s).c>=100, color:"--l-br"},
+  {id:"fix10", name:"錯題清 10 題", test:s=>Object.values(s.stats).filter(x=>x.wrong>0&&x.box>=3).length>=10, color:"--l-p"},
+  {id:"chat1", name:"第一次對話", test:s=>s.ai.chats>=1, color:"--accent"},
+  {id:"full", name:"目標字全用", test:s=>s.ai.full>=1, color:"--warn"},
+  {id:"read1", name:"第一篇閱讀", test:s=>(s.read?.n || 0)>=1, color:"--l-g"},
+  {id:"readp", name:"閱讀全對", test:s=>(s.read?.perfect || 0)>=1, color:"--l-o"}
+];
+
+/* Textbook readings attached once to a matching word group (by group name). */
+const PACKS = {};
+/* Word groups built from the user's textbook photos, created once. */
+const NEWGROUPS = [];
+function createGroups(){
+  let changed = false;
+  S.made = S.made || [];
+  S.custom = S.custom || [];
+  NEWGROUPS.forEach(ng => {
+    if (S.made.includes(ng.key)) return;
+    S.made.push(ng.key); changed = true;
+    if (S.custom.some(g => g.name === ng.name)) return;
+    S.custom.unshift({id:rid(), name:ng.name, created:Date.now(), chats:0, words:ng.words.map(w => Object.assign({id:rid()}, w))});
+  });
+  return changed;
+}
+function applyPacks(){
+  let changed = createGroups();
+  (S.custom || []).forEach(g => {
+    (PACKS[g.name] || []).forEach(pk => {
+      g.packs = g.packs || [];
+      if (g.packs.includes(pk.id)) return;
+      g.packs.push(pk.id);
+      if (!g.focus && pk.focus) g.focus = pk.focus;
+      if (pk.reading) {
+        g.readings = g.readings || [];
+        g.readings.push(Object.assign({id:"pk-" + pk.id, best:0, tries:0, created:Date.now()}, JSON.parse(JSON.stringify(pk.reading))));
+      }
+      if (pk.words) {
+        const have = new Set(g.words.map(w => normAns(w.w)));
+        pk.words.forEach(w => { if (!have.has(normAns(w.w))) { have.add(normAns(w.w)); g.words.push(Object.assign({id:rid()}, w)); } });
+      }
+      if (pk.wordUpdates) pk.wordUpdates.forEach(u => { const w = g.words.find(x => normAns(x.w) === normAns(u.w)); if (w) w.zh = u.zh; });
+      if (pk.sentUpsert || pk.sentSrc) {
+        g.sentences = g.sentences || [];
+        (pk.sentUpsert || []).forEach(u => { const x = g.sentences.find(y => normSent(y.en) === normSent(u.en)); if (x) Object.assign(x, u); else g.sentences.push(Object.assign({id:rid()}, u)); });
+        (pk.sentSrc || []).forEach(u => { const x = g.sentences.find(y => normSent(y.en) === normSent(u.en)); if (x) x.src = u.src; });
+        if (pk.sentFirst) { const ord = (pk.sentUpsert || []).map(u => normSent(u.en)), pos = x => { const i = ord.indexOf(normSent(x.en)); return i < 0 ? 999 : i; };
+          const a = g.sentences.filter(x => (x.src || "").startsWith(pk.sentFirst)).sort((m, n) => pos(m) - pos(n)), b = g.sentences.filter(x => !(x.src || "").startsWith(pk.sentFirst)); g.sentences = a.concat(b); }
+      }
+      if (pk.sentences) {
+        g.sentences = g.sentences || [];
+        const hs = new Set(g.sentences.map(x => normSent(x.en)));
+        pk.sentences.forEach(x => { if (!hs.has(normSent(x.en))) { hs.add(normSent(x.en)); g.sentences.push(Object.assign({id:rid()}, x)); } });
+      }
+      changed = true;
+    });
+  });
+  return changed;
+}
+
+/* ========== STATE & STORAGE ========== */
+const LSKEY = "wordline-v1";
+function freshState(){ return {v:1, updated:0, xp:0, stats:{}, scenes:{}, days:{}, badges:[], ai:{chats:0, full:0, msgs:0, fixes:[]}, custom:[], read:{n:0, q:0, c:0, perfect:0}}; }
+let S = freshState();
+try { const raw = localStorage.getItem(LSKEY); if (raw) S = Object.assign(freshState(), JSON.parse(raw)); } catch(e) {}
+let dbDoc = null, dbTimer = null, dbBusy = false, dbAgain = false, syncState = "local";
+
+function save(){
+  S.updated = Date.now();
+  try { localStorage.setItem(LSKEY, JSON.stringify(S)); } catch(e) {}
+  if (dbDoc) { clearTimeout(dbTimer); dbTimer = setTimeout(flushDb, 2500); }
+}
+function adopt(remote){
+  S = Object.assign(freshState(), JSON.parse(JSON.stringify(remote)));
+  try { localStorage.setItem(LSKEY, JSON.stringify(S)); } catch(e) {}
+  if (applyPacks()) save();
+  renderAll();
+}
+async function flushDb(){
+  if (!dbDoc) return;
+  if (dbBusy) { dbAgain = true; return; }
+  dbBusy = true;
+  try { await dbDoc.set(JSON.parse(JSON.stringify(S))); syncState = "cloud"; }
+  catch(e) { if (e && e.code === "invalid_argument") { dbDoc = null; syncState = "local"; } }
+  dbBusy = false;
+  if (dbAgain) { dbAgain = false; flushDb(); }
+}
+(async () => {
+  try {
+    if (!window.claude || !claude.use) return;
+    const [db, user] = await Promise.all([claude.use("db"), claude.use("user")]);
+    if (!db || !user) return;
+    const uid = await user.id();
+    if (!uid) return;
+    const ref = db.doc("data/users/" + uid + "/progress");
+    const snap = await ref.get();
+    dbDoc = ref; syncState = "cloud";
+    if (snap.exists) {
+      const remote = snap.data();
+      if (remote && (remote.updated || 0) > (S.updated || 0)) adopt(remote);
+    } else if (S.updated) { flushDb(); }
+    renderSyncNote();
+    ref.onSnapshot(sn => {
+      if (!sn.exists || sn.metadata.hasPendingWrites) return;
+      const remote = sn.data();
+      if (remote && (remote.updated || 0) > (S.updated || 0)) adopt(remote);
+    }, () => {});
+  } catch(e) {}
+})();
+
+/* ========== HELPERS ========== */
+const $ = s => document.querySelector(s);
+const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+function dkey(t){ const d = new Date(t ?? Date.now()); return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0"); }
+function today(){ const k = dkey(); return S.days[k] || (S.days[k] = {q:0, c:0, sec:0}); }
+function streak(s){ let n = 0, t = Date.now(); if (!(s.days[dkey(t)]?.q > 0)) t -= DAY; while (s.days[dkey(t)]?.q > 0) { n++; t -= DAY; } return n; }
+function totals(s){ let q = 0, c = 0, sec = 0; Object.values(s.days).forEach(d => { q += d.q; c += d.c; sec += d.sec || 0; }); return {q, c, sec}; }
+function levelOf(xp){ let i = 0; while (i < LEVELS.length - 1 && xp >= LEVELS[i+1]) i++; return i; }
+function lineColor(id){ return SCENE[id] ? "var(" + SCENE[id].line + ")" : "var(--accent)"; }
+function groupOf(key){ return (S.custom || []).find(g => "c:" + g.id === key); }
+function sceneLabel(it){ if (SCENE[it.scene]) return SCENE[it.scene].zh; const g = groupOf(it.scene); return g ? g.name : "我的單字"; }
+const rid = () => Math.random().toString(36).slice(2, 9);
+const normAns = v => String(v).toLowerCase().replace(/[\u2019\u2018]/g, "'").replace(/\s+/g, " ").replace(/[.!?]+$/, "").trim();
+function rebuildCustomItems(){
+  Object.keys(ITEMS).forEach(k => { if (k.startsWith("c-") || k.startsWith("s-")) delete ITEMS[k]; });
+  (S.custom || []).forEach(g => (g.sentences || []).forEach(x => {
+    const id = "s-" + g.id + "-" + x.id;
+    ITEMS[id] = {id, scene:"c:" + g.id, custom:true, sent:true, a:x.en, m:x.zh, note:x.note || "", src:x.src || "", t:null, zh:""};
+  }));
+  (S.custom || []).forEach(g => g.words.forEach(w => {
+    let t = null;
+    if (w.ex) {
+      const i = w.ex.toLowerCase().indexOf(w.w.toLowerCase());
+      if (i >= 0) t = w.ex.slice(0, i) + "___" + w.ex.slice(i + w.w.length);
+    }
+    ITEMS["c-" + g.id + "-" + w.id] = {id:"c-" + g.id + "-" + w.id, scene:"c:" + g.id, custom:true, a:w.w, m:w.zh, t, zh:w.ex || ""};
+  }));
+}
+function groupItems(key){ return Object.values(ITEMS).filter(x => x.scene === key && !x.sent); }
+function sentItems(key){ return Object.values(ITEMS).filter(x => x.scene === key && x.sent); }
+function normSent(v){ return String(v).toLowerCase().replace(/[\u2019\u2018]/g, "'").replace(/[^a-z0-9' ]+/g, " ").replace(/\s+/g, " ").trim(); }
+function isPhraseWord(w){ const zh = w.m || w.zh || ""; return /^（片/.test(zh) || (/\s/.test(w.a || w.w) && !/^（[名動形副代介]/.test(zh)); }
+function parseSents(text){
+  const ok = [], bad = [], keys = new Set();
+  text.split(/\r?\n/).forEach((raw, n) => {
+    const line = raw.trim(); if (!line) return;
+    const parts = line.split(/\s*[|\uFF5C]\s*/);
+    const en = (parts[0] || "").replace(/\s+/g, " ").trim(), zh = (parts[1] || "").trim(), note = parts.slice(2).join("；").trim();
+    if (!/[A-Za-z]/.test(en) || /[\u3400-\u9fff]/.test(en) || !zh || en.split(" ").length < 2) { bad.push(n + 1); return; }
+    const k = normSent(en); if (keys.has(k)) return; keys.add(k);
+    ok.push({en, zh, note});
+  });
+  return {ok, bad};
+}
+function choicesFor(it, key){
+  const ans = it[key], seen = new Set([normAns(ans)]), out = [];
+  const add = list => { for (const x of shuffle(list)) { if (out.length >= 3) return; const v = x[key]; if (!v || seen.has(normAns(v))) continue; seen.add(normAns(v)); out.push(v); } };
+  add(groupItems(it.scene).filter(x => x.id !== it.id));
+  add(Object.values(ITEMS).filter(x => x.custom && !x.sent && x.scene !== it.scene));
+  if (key === "a") add(Object.values(ITEMS).filter(x => !x.custom));
+  return shuffle(out.concat([ans]));
+}
+function parseWords(text){
+  const ok = [], bad = [], keys = new Set();
+  text.split(/\r?\n/).forEach((raw, n) => {
+    const line = raw.trim(); if (!line) return;
+    const m = line.match(/^(.+?)\s*(?:\t|,|\uFF0C|\||\u3001)\s*(.+?)(?:\s*(?:\t|,|\uFF0C|\|)\s*(.+))?$/);
+    if (!m) { bad.push(n + 1); return; }
+    let w = m[1].trim(), zh = m[2].trim(), ex = (m[3] || "").trim();
+    const cjk = /[\u3400-\u9fff]/;
+    if (cjk.test(w) && !cjk.test(zh) && /[A-Za-z]/.test(zh)) { const t = w; w = zh; zh = t; }
+    if (!/[A-Za-z]/.test(w) || cjk.test(w) || !zh) { bad.push(n + 1); return; }
+    const k = normAns(w); if (keys.has(k)) return; keys.add(k);
+    ok.push({w:w.replace(/\s+/g, " "), zh, ex});
+  });
+  return {ok, bad};
+}
+function stat(id){ return S.stats[id] || (S.stats[id] = {seen:0, right:0, wrong:0, box:0, due:0, last:0}); }
+function isWeak(st){ return st.wrong > 0 && st.box < 3; }
+function weakIds(){ return Object.keys(S.stats).filter(id => ITEMS[id] && isWeak(S.stats[id])); }
+function dueIds(){ const now = Date.now(); return weakIds().filter(id => S.stats[id].due <= now); }
+
+function speak(text){
+  try {
+    if (!("speechSynthesis" in window)) return;
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text.replace(/_{2,}/g, "blank"));
+    u.lang = "en-US"; u.rate = 0.88;
+    const v = speechSynthesis.getVoices().find(v => /^en(-|_)US/i.test(v.lang));
+    if (v) u.voice = v;
+    speechSynthesis.speak(u);
+  } catch(e) {}
+}
+const canSpeak = (() => { try { return "speechSynthesis" in window; } catch(e) { return false; } })();
+const SPK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>';
+function sayBtn(getText){
+  const b = el("button", "say"); b.type = "button"; b.innerHTML = SPK; b.setAttribute("aria-label", "聽發音");
+  if (!canSpeak) b.hidden = true;
+  b.onclick = () => speak(getText());
+  return b;
+}
+
+let toastT;
+function toast(msg){
+  const old = document.querySelector(".toast"); if (old) old.remove();
+  const t = el("div", "toast", msg); document.body.appendChild(t);
+  clearTimeout(toastT); toastT = setTimeout(() => t.remove(), 2400);
+}
+function addXP(n){
+  const before = levelOf(S.xp); S.xp += n; const after = levelOf(S.xp);
+  if (after > before) toast("升級！Lv." + (after + 1) + " " + TITLES[Math.min(after, TITLES.length - 1)]);
+}
+function record(id, ok, mode){
+  const st = stat(id), d = today();
+  st.seen++; st.last = Date.now(); d.q++;
+  if (ok) {
+    st.right++; d.c++;
+    if (mode === "review" && st.wrong > 0) { st.box = Math.min(5, st.box + 1); st.due = Date.now() + BOXDAYS[st.box] * DAY; }
+    else if (st.wrong === 0) { st.box = Math.max(st.box, 3); }
+  } else {
+    st.wrong++; st.box = 0; st.due = Date.now();
+  }
+}
+function checkBadges(){
+  BADGES.forEach(b => { if (!S.badges.includes(b.id) && b.test(S)) { S.badges.push(b.id); setTimeout(() => toast("獲得徽章：" + b.name), 600); } });
+}
+
+/* activity time: count 15s ticks while the page is visible and touched recently */
+let lastAct = Date.now();
+["pointerdown","keydown"].forEach(ev => addEventListener(ev, () => { lastAct = Date.now(); }, {passive:true}));
+setInterval(() => { if (document.visibilityState === "visible" && Date.now() - lastAct < 90000) { today().sec += 15; save(); } }, 15000);
+
+/* ========== NAV ========== */
+let view = "home";
+function show(name){
+  view = name;
+  ["home","scene","ai","review","report","play","custom","read"].forEach(v => $("#v-" + v).hidden = v !== name);
+  const tabFor = {home:"home", scene:"home", ai:(A && A.back) || "home", review:"review", report:"report", play:(R && R.back) || PB || "review", custom:"custom", read:"custom"}[name];
+  document.querySelectorAll(".tab").forEach(t => t.setAttribute("aria-current", t.dataset.tab === tabFor ? "page" : "false"));
+  if (name === "home") renderHome();
+  if (name === "review") renderReviewHome();
+  if (name === "report") renderReport();
+  if (name === "custom") renderCustom();
+  if (name === "read") renderRead();
+  scrollTo({top:0});
+}
+document.querySelectorAll(".tab").forEach(t => t.onclick = () => { stopAI(); show(t.dataset.tab); });
+
+/* ========== HEADER ========== */
+function renderHeader(){
+  const li = levelOf(S.xp), lo = LEVELS[li], hi = LEVELS[li + 1] ?? (lo + 1000);
+  $("#lvlNum").textContent = "Lv." + (li + 1);
+  $("#lvlName").textContent = TITLES[Math.min(li, TITLES.length - 1)];
+  $("#xpFill").style.width = Math.min(100, (S.xp - lo) / (hi - lo) * 100) + "%";
+  $("#xpText").textContent = S.xp + " / " + hi + " XP";
+  $("#streakNum").textContent = streak(S);
+  const due = dueIds().length, pill = $("#duePill");
+  pill.hidden = due === 0; pill.textContent = due;
+}
+
+/* ========== HOME ========== */
+function renderHome(){
+  const ol = $("#route"); ol.innerHTML = "";
+  SCENES.forEach((s, i) => {
+    const prog = S.scenes[s.id] || {};
+    const li = el("li", "stop" + (prog.cleared ? " done" : ""));
+    li.style.setProperty("--line", lineColor(s.id));
+    const rail = el("div", "rail"); rail.appendChild(el("div", "node", s.code + (i + 1)));
+    const body = el("div", "stop-body");
+    const tt = el("div", "stop-title");
+    const h = el("h3", "en", s.en); h.appendChild(el("span", "", s.zh)); tt.appendChild(h);
+    const blanks = s.lines.filter(l => l.a).length;
+    tt.appendChild(el("p", "", s.npc + " · " + blanks + " 個單字片語"));
+    const stars = el("div", "stars");
+    for (let k = 1; k <= 3; k++) { const sp = el("span", (prog.best || 0) >= k ? "" : "off", "★"); stars.appendChild(sp); }
+    stars.setAttribute("aria-label", (prog.best || 0) + " 顆星");
+    const acts = el("div", "stop-actions");
+    const b1 = el("button", "btn small" + (prog.cleared ? "" : " primary"), prog.cleared ? "再練一次" : "劇本練習");
+    b1.onclick = () => startScene(s.id);
+    acts.appendChild(b1);
+    if (prog.cleared) { const b2 = el("button", "btn small primary", "AI 自由對話"); b2.onclick = () => startAI(s.id); acts.appendChild(b2); }
+    else acts.appendChild(el("span", "lock", "通過劇本後解鎖 AI 對話"));
+    body.append(tt, stars, acts);
+    li.append(rail, body); ol.appendChild(li);
+  });
+  const d = S.days[dkey()] || {q:0, c:0};
+  $("#goalNum").textContent = d.q;
+  $("#ringArc").setAttribute("stroke-dashoffset", 182.2 * (1 - Math.min(1, d.q / GOAL)));
+  $("#goalMsg").textContent = d.q === 0 ? "今天還沒開始，從第一站出發吧。" : d.q >= GOAL ? "今日目標達成！答對率 " + Math.round(d.c / d.q * 100) + "%。" : "再 " + (GOAL - d.q) + " 題就達標。";
+  const due = dueIds().length, weak = weakIds().length;
+  $("#dueMsg").textContent = weak === 0 ? "目前沒有錯題，繼續闖關吧。" : "錯題本裡有 " + weak + " 題，其中 " + due + " 題今天該複習。";
+  $("#goReview").disabled = weak === 0;
+  const nW = (S.custom || []).reduce((a, g) => a + g.words.length, 0);
+  $("#myMsg").textContent = nW ? "已建立 " + S.custom.length + " 組、共 " + nW + " 個字。" : "把課本的單字表貼進來，就能練習和跟 AI 對話。";
+  const bw = $("#badges"); bw.innerHTML = "";
+  BADGES.forEach(b => {
+    const on = S.badges.includes(b.id);
+    const d = el("div", "badge" + (on ? " on" : ""));
+    d.innerHTML = '<svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="17" fill="var(' + b.color + ')"/><circle cx="20" cy="20" r="11" fill="none" stroke="var(--surface)" stroke-width="2.5"/><path d="M14.5 20.5l3.6 3.6 7.4-7.6" fill="none" stroke="var(--surface)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    d.appendChild(el("span", "", b.name));
+    d.title = on ? "已獲得" : "尚未獲得";
+    bw.appendChild(d);
+  });
+  renderHeader();
+}
+$("#goReview").onclick = () => show("review");
+$("#goCustom").onclick = () => show("custom");
+
+/* ========== SCENE PLAY ========== */
+let P = null;
+function fillLine(t, ans){ return t.replace("___", ans); }
+function lineNode(l, scene, answered){
+  const wrap = el("div", "msg" + (l.w === "me" ? " me" : ""));
+  wrap.appendChild(el("div", "who", l.w === "me" ? "我" : (l.n || scene.npc)));
+  const b = el("div", "bubble"), t = el("div", "t");
+  const parts = l.t.split("___");
+  t.appendChild(document.createTextNode(parts[0]));
+  if (parts.length > 1) {
+    const slot = el("span", answered ? "filled" : "blank", answered ? l.a : " ");
+    t.appendChild(slot); t.appendChild(document.createTextNode(parts[1]));
+    wrap._slot = slot;
+  }
+  b.append(t, sayBtn(() => l.a ? fillLine(l.t, l.a) : l.t));
+  wrap.append(b, el("div", "zh", l.zh));
+  return wrap;
+}
+function startScene(id){
+  const s = SCENE[id];
+  P = {s, i:0, wrong:0, xp:0, total:s.lines.filter(l => l.a).length, done:0};
+  $("#v-scene").style.setProperty("--line", lineColor(id));
+  $("#sCode").textContent = s.code; $("#sTitle").textContent = s.en; $("#sZh").textContent = s.zh;
+  $("#sChat").innerHTML = ""; $("#sPanel").innerHTML = ""; $("#sProg").style.width = "0";
+  show("scene");
+  nextLine();
+}
+$("#sExit").onclick = () => { P = null; show("home"); };
+function nextLine(){
+  if (!P) return;
+  const {s} = P;
+  if (P.i >= s.lines.length) return finishScene();
+  const l = s.lines[P.i];
+  const node = lineNode(l, s, false);
+  $("#sChat").appendChild(node);
+  node.scrollIntoView({block:"nearest", behavior:"smooth"});
+  if (!l.a) { if (l.w === "npc") speak(l.t); P.i++; setTimeout(nextLine, 900); return; }
+  askBlank(l, node);
+}
+function askBlank(l, node){
+  const panel = $("#sPanel"); panel.innerHTML = "";
+  const grid = el("div", "choices"); let first = true;
+  shuffle(l.c).forEach(opt => {
+    const b = el("button", "choice en", opt); b.type = "button";
+    b.onclick = () => {
+      if (opt === l.a) {
+        b.classList.add("right");
+        grid.querySelectorAll("button").forEach(x => x.disabled = true);
+        if (first) { record(l.id, true, "scene"); addXP(10); P.xp += 10; }
+        node._slot.className = "filled"; node._slot.textContent = l.a;
+        speak(fillLine(l.t, l.a));
+        P.done++; $("#sProg").style.width = (P.done / P.total * 100) + "%";
+        save(); renderHeader();
+        if (first) { setTimeout(() => { panel.innerHTML = ""; P.i++; nextLine(); }, 900); }
+        else {
+          const go = el("button", "btn primary", "繼續");
+          go.onclick = () => { panel.innerHTML = ""; P.i++; nextLine(); };
+          panel.querySelector(".row")?.remove();
+          const row = el("div", "row"); row.appendChild(go); panel.appendChild(row); go.focus();
+        }
+      } else {
+        b.classList.add("wrong"); b.disabled = true;
+        if (first) { first = false; record(l.id, false, "scene"); P.wrong++; save(); renderHeader(); }
+        let fb = panel.querySelector(".feedback");
+        if (!fb) { fb = el("div", "feedback"); panel.appendChild(fb); }
+        fb.innerHTML = "";
+        fb.append(document.createTextNode("再想想：這題已記到錯題本。提示："), el("b", "", l.m));
+        if (l.tip) fb.appendChild(el("span", "tip", l.tip));
+      }
+    };
+    grid.appendChild(b);
+  });
+  panel.appendChild(grid);
+}
+function finishScene(){
+  const {s, wrong, xp} = P;
+  const stars = wrong === 0 ? 3 : wrong <= 2 ? 2 : 1;
+  const prog = S.scenes[s.id] || (S.scenes[s.id] = {cleared:false, best:0, plays:0, chats:0});
+  const firstClear = !prog.cleared;
+  prog.cleared = true; prog.plays = (prog.plays || 0) + 1; prog.best = Math.max(prog.best || 0, stars);
+  const bonus = firstClear ? 30 : 10; addXP(bonus);
+  checkBadges(); save(); renderHeader();
+  const panel = $("#sPanel"); panel.innerHTML = "";
+  const c = el("div", "card result");
+  c.appendChild(el("div", "label", firstClear ? "本站通過" : "練習完成"));
+  const st = el("div", "big stars"); for (let k = 1; k <= 3; k++) st.appendChild(el("span", stars >= k ? "" : "off", "★")); c.appendChild(st);
+  c.appendChild(el("h3", "", wrong === 0 ? "全對！" : "答錯 " + wrong + " 題，已收進錯題本"));
+  c.appendChild(el("p", "muted", "本次獲得 " + (xp + bonus) + " XP"));
+  const row = el("div", "row");
+  const ai = el("button", "btn primary", "用這些字跟 AI 對話"); ai.onclick = () => startAI(s.id);
+  const again = el("button", "btn", "再練一次"); again.onclick = () => startScene(s.id);
+  const home = el("button", "btn ghost", "回路線圖"); home.onclick = () => show("home");
+  row.append(ai, again, home); c.appendChild(row);
+  panel.appendChild(c);
+  c.scrollIntoView({block:"nearest", behavior:"smooth"});
+  P = null;
+}
+
+/* ========== AI FREE TALK ========== */
+let A = null, sampleFn = null, sampleState = (window.claude && claude.use) ? "pending" : "none";
+const AI_HOST_MSG = (window.claude && claude.use) ? "AI 功能需要在登入 Claude 的狀態下開啟這個頁面才能使用。" : "這個網址版本沒有 AI 功能，AI 對話和 AI 出題只能在 Claude 裡開啟遊戲時使用。";
+(async () => {
+  try { if (window.claude && claude.use) sampleFn = await claude.use("sample"); } catch(e) {}
+  sampleState = sampleFn ? "ok" : "none";
+  if (view === "ai") renderAINotice();
+})();
+function getScene(key){
+  if (SCENE[key]) return SCENE[key];
+  const g = groupOf(key); if (!g) return null;
+  const items = groupItems(key);
+  const pri = items.slice().sort((a, b) => ((S.stats[a.id]?.box ?? -1) - (S.stats[b.id]?.box ?? -1)) || (Math.random() - .5));
+  const pick = pri.slice(0, 8);
+  return {id:key, code:"MY", line:"--accent", en:"My Words", zh:g.name, npc:"英文老師 Ms. Lee",
+    role:"Ms. Lee, a friendly English teacher chatting with a student about daily life, school and hobbies",
+    student:"an 8th-grade student in Taiwan practicing words from this week's textbook lesson",
+    targets:pick.map(x => x.a), note:"Meanings of the target words: " + pick.map(x => x.a + " = " + x.m).join("; ") + ". Pick everyday topics where these words fit naturally."};
+}
+function rules(s){
+  return [
+    "You are role-playing in an English speaking game for a Taiwanese junior high school student (CEFR A1-A2, 國中會考 level).",
+    "Scene: " + s.en + ". You are " + s.role + ". The student is " + s.student + ".",
+    "Target words and phrases the student should try to use: " + s.targets.join(", ") + ".",
+    s.note || "",
+    "Rules:",
+    "- Stay in character. Use simple, common junior-high English. Reply in 1-2 short sentences (25 words max).",
+    "- End your reply with a question that gives the student a natural chance to use a target word they have not used yet.",
+    "- Look at the student's latest message. If it has a clear grammar or word error, give exactly one correction. Small capitalization or punctuation slips do not count.",
+    "- If the student writes in Chinese, answer in character in English, and use \"fix\" to show how to say it in English.",
+    "- Keep everything school-appropriate.",
+    "Reply with ONLY a JSON object of this shape:",
+    '{"reply": string, "reply_zh": string, "fix": null or {"wrong": string, "right": string, "why": string}, "used": [string], "praise": string}',
+    "reply_zh is a Traditional Chinese (Taiwan) translation of reply. why is a short Traditional Chinese explanation, 30 characters max. used lists the target words or phrases (copied exactly from the target list) that the student used correctly in the latest message; any verb form counts. praise is a short Traditional Chinese encouragement (12 characters max) when the student did well, otherwise an empty string."
+  ].join("\n");
+}
+function startAI(id){
+  const s = getScene(id); if (!s) return;
+  A = {s, turns:[], used:new Set(), fixes:[], busy:false, ctl:null, msgs:0, xp:0, back:SCENE[id] ? "home" : "custom"};
+  $("#v-ai").style.setProperty("--line", "var(" + s.line + ")");
+  $("#aCode").textContent = s.code; $("#aTitle").textContent = s.en + " · Free Talk"; $("#aZh").textContent = s.zh;
+  $("#aChat").innerHTML = ""; $("#aInput").value = ""; $("#aSend").disabled = false;
+  renderTargets();
+  show("ai");
+  renderAINotice();
+  if (sampleFn) aiCall(true);
+}
+function renderTargets(){
+  const box = $("#aTargets"); box.innerHTML = "";
+  A.s.targets.forEach(t => box.appendChild(el("span", "tchip" + (A.used.has(t) ? " used" : ""), t)));
+}
+function renderAINotice(){
+  const n = $("#aNotice"); n.innerHTML = "";
+  const off = !sampleFn && sampleState !== "pending";
+  $("#aForm").hidden = off;
+  if (off) n.appendChild(el("div", "notice", AI_HOST_MSG + "劇本練習、錯題複習和報表都不受影響。"));
+  else if (!sampleFn) n.appendChild(el("div", "thinking", "正在連線…"));
+}
+function stopAI(){ if (A && A.ctl) A.ctl.abort(); }
+function localUsed(text, t){
+  const s = text.toLowerCase();
+  const stem = t.toLowerCase().replace(/^be /, "").replace(/^catch /, "c");
+  if (t === "catch a cold") return /\b(catch|catches|caught|catching) a cold\b/.test(s);
+  return new RegExp("\\b" + stem.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).test(s);
+}
+function aiBubble(data){
+  const wrap = el("div", "msg");
+  wrap.appendChild(el("div", "who", A.s.npc));
+  const b = el("div", "bubble"), t = el("div", "t", data.reply);
+  b.append(t, sayBtn(() => data.reply)); wrap.appendChild(b);
+  if (data.reply_zh) wrap.appendChild(el("div", "zh", data.reply_zh));
+  return wrap;
+}
+function meBubble(text){
+  const wrap = el("div", "msg me");
+  wrap.appendChild(el("div", "who", "我"));
+  const b = el("div", "bubble"); b.appendChild(el("div", "t", text)); wrap.appendChild(b);
+  return wrap;
+}
+async function aiCall(opening, userText){
+  if (!sampleFn || A.busy) return;
+  const sess = A;
+  sess.busy = true; $("#aSend").disabled = true;
+  const meNode = userText ? meBubble(userText) : null;
+  if (meNode) $("#aChat").appendChild(meNode);
+  const wait = el("div", "thinking", opening ? A.s.npc + " 正在走過來…" : "對方正在想怎麼回…");
+  $("#aChat").appendChild(wait); wait.scrollIntoView({block:"nearest", behavior:"smooth"});
+  const input = [{role:"user", content:rules(sess.s)}];
+  if (opening) input.push({role:"user", content:"(The conversation starts now. Greet the student in character and ask your first question. The student has not spoken yet, so fix is null, used is [] and praise is \"\".)"});
+  else { sess.turns.forEach(x => input.push(x)); }
+  sess.ctl = new AbortController();
+  try {
+    const data = await sampleFn.json(input, {modelTier:"quick", cache:false, signal:sess.ctl.signal});
+    if (A !== sess) return;
+    wait.remove();
+    if (!data || typeof data.reply !== "string") throw {code:"invalid_json"};
+    if (opening) sess.turns.push({role:"user", content:"(start)"});
+    sess.turns.push({role:"assistant", content:JSON.stringify({reply:data.reply})});
+    if (!opening && meNode) {
+      const usedNow = new Set();
+      (Array.isArray(data.used) ? data.used : []).forEach(u => { const m = sess.s.targets.find(t => t.toLowerCase() === String(u).toLowerCase().trim()); if (m) usedNow.add(m); });
+      sess.s.targets.forEach(t => { if (localUsed(userText, t)) usedNow.add(t); });
+      let gained = 5;
+      usedNow.forEach(t => { if (!sess.used.has(t)) { sess.used.add(t); gained += 10; } });
+      if (data.praise) meNode.appendChild(el("div", "praise", data.praise));
+      if (data.fix && data.fix.right) {
+        const f = el("div", "fix");
+        if (data.fix.wrong) { f.appendChild(el("s", "", data.fix.wrong)); f.appendChild(document.createTextNode(" → ")); }
+        f.appendChild(el("b", "", data.fix.right));
+        if (data.fix.why) { f.appendChild(document.createElement("br")); f.appendChild(document.createTextNode(data.fix.why)); }
+        meNode.appendChild(f);
+        sess.fixes.push({w:String(data.fix.wrong || "").slice(0,80), r:String(data.fix.right).slice(0,80), y:String(data.fix.why || "").slice(0,40)});
+      }
+      sess.msgs++; sess.xp += gained; addXP(gained);
+      S.ai.msgs++; today().q++; today().c += (data.fix && data.fix.right) ? 0 : 1;
+      renderTargets(); save(); renderHeader();
+      if (sess.used.size === sess.s.targets.length && !sess.fullNoted) { sess.fullNoted = true; toast("目標字全部用到了！可以結束對話看成果。"); }
+    }
+    const node = aiBubble(data); $("#aChat").appendChild(node);
+    node.scrollIntoView({block:"nearest", behavior:"smooth"});
+    speak(data.reply);
+    if (sess.turns.length > 24) sess.turns.splice(0, 2);
+  } catch(e) {
+    if (A !== sess) return;
+    wait.remove();
+    if (meNode && !opening) sess.turns.pop();
+    const code = e && e.code;
+    if (code === "cancelled") {}
+    else if (["not_granted","sampling_disabled","not_declared","capability_disabled","capability_removed"].includes(code)) { sampleFn = null; sampleState = "none"; renderAINotice(); }
+    else {
+      const msg = code === "rate_limited" ? "使用次數暫時太多，休息一下再試。" : code === "session_expired" ? "登入已過期，請重新登入 Claude 後再開啟頁面。" : "對方沒聽清楚，請再送一次。";
+      const n = el("div", "notice", msg);
+      if (opening) { const r = el("button", "btn small", "重新開始對話"); r.style.marginLeft = "8px"; r.onclick = () => { n.remove(); aiCall(true); }; n.appendChild(r); }
+      $("#aChat").appendChild(n);
+      if (userText) $("#aInput").value = userText;
+    }
+  } finally {
+    if (A === sess) { sess.busy = false; $("#aSend").disabled = false; }
+  }
+}
+$("#aForm").addEventListener("submit", e => {
+  e.preventDefault();
+  if (!A || A.busy) return;
+  const v = $("#aInput").value.trim(); if (!v) return;
+  $("#aInput").value = "";
+  A.turns.push({role:"user", content:v});
+  aiCall(false, v);
+});
+$("#aEnd").onclick = () => {
+  if (!A) return show("home");
+  stopAI();
+  if (A.msgs === 0) { const b = A.back; A = null; return show(b); }
+  const sess = A; A = null;
+  if (sess.msgs > 0) {
+    S.ai.chats++;
+    if (sess.used.size === sess.s.targets.length) S.ai.full++;
+    const prog = S.scenes[sess.s.id]; if (prog) prog.chats = (prog.chats || 0) + 1;
+    const grp = groupOf(sess.s.id); if (grp) grp.chats = (grp.chats || 0) + 1;
+    S.ai.fixes = S.ai.fixes.concat(sess.fixes.map(f => Object.assign({s:sess.s.id, d:dkey()}, f))).slice(-20);
+    checkBadges(); save();
+  }
+  showChatResult(sess);
+};
+function showChatResult(sess){
+  const lay = $("#layer"); lay.innerHTML = "";
+  const ov = el("div", "overlay"), c = el("div", "card dialog");
+  c.appendChild(el("div", "label", sess.s.en + " · 對話成果"));
+  c.appendChild(el("h3", "", "用到 " + sess.used.size + " / " + sess.s.targets.length + " 個目標字"));
+  const missing = sess.s.targets.filter(t => !sess.used.has(t));
+  c.appendChild(el("p", "small muted", missing.length ? "下次試試看：" + missing.join("、") : "全部用到了，太厲害！"));
+  c.appendChild(el("p", "small", "說了 " + sess.msgs + " 句，被糾正 " + sess.fixes.length + " 次，獲得 " + sess.xp + " XP。"));
+  const row = el("div", "row");
+  const ok = el("button", "btn primary", sess.back === "custom" ? "回我的單字" : "回路線圖"); ok.onclick = () => { lay.innerHTML = ""; show(sess.back || "home"); };
+  const again = el("button", "btn", "再聊一次"); again.onclick = () => { lay.innerHTML = ""; startAI(sess.s.id); };
+  if (sess.back === "custom") ok.textContent = "回我的單字";
+  row.append(ok, again); c.appendChild(row);
+  ov.appendChild(c); lay.appendChild(ov); ok.focus();
+}
+
+/* ========== REVIEW ========== */
+let R = null;
+function renderReviewHome(){
+  const due = dueIds(), weak = weakIds();
+  const cleared = SCENES.filter(s => S.scenes[s.id]?.cleared).concat(Object.values(ITEMS).some(x => x.custom) ? [1] : []);
+  $("#rDueText").textContent = due.length ? due.length + " 題到期，每次最多 10 題。" : weak.length ? "今天沒有到期的題目，明天再來。" : "目前沒有錯題。";
+  $("#rStartDue").disabled = due.length === 0;
+  $("#rStartAll").disabled = weak.length === 0;
+  $("#rAllText").textContent = weak.length ? "錯題本 " + weak.length + " 題全部練一次。" : "目前沒有錯題。";
+  $("#rStartSpell").disabled = cleared.length === 0;
+  const tb = $("#rTable"); tb.innerHTML = "";
+  if (!weak.length) { const tr = el("tr"); const td = el("td", "muted", "還沒有錯題。答錯的字會自動收進來。"); tr.appendChild(td); tb.appendChild(tr); renderHeader(); return; }
+  const head = el("tr"); ["單字片語","意思","站","答錯","精熟度","下次複習"].forEach(h => head.appendChild(el("th", "", h))); tb.appendChild(head);
+  weak.sort((a, b) => S.stats[b].wrong - S.stats[a].wrong).forEach(id => {
+    const it = ITEMS[id], st = S.stats[id], tr = el("tr");
+    tr.appendChild(el("td", it.sent ? "w sentcell" : "w", it.a));
+    tr.appendChild(el("td", "", it.m));
+    tr.appendChild(el("td", "small muted", sceneLabel(it)));
+    tr.appendChild(el("td", "mono", st.wrong));
+    const bx = el("td"), bs = el("span", "boxes"); for (let k = 0; k < 3; k++) bs.appendChild(el("i", st.box > k ? "on" : "")); bx.appendChild(bs); tr.appendChild(bx);
+    tr.appendChild(el("td", "small", st.due <= Date.now() ? "今天" : dkey(st.due).slice(5).replace("-", "/")));
+    tb.appendChild(tr);
+  });
+  renderHeader();
+}
+$("#rStartDue").onclick = () => startReview(shuffle(dueIds()).slice(0, 10), "review");
+$("#rStartAll").onclick = () => startReview(shuffle(weakIds()), "review");
+$("#rStartSpell").onclick = () => {
+  const pool = Object.values(ITEMS).filter(it => !it.sent && (it.custom || S.scenes[it.scene]?.cleared));
+  startReview(shuffle(pool).slice(0, 10).map(it => it.id), "spell");
+};
+let PB = null;
+function startReview(ids, kind, back){
+  PB = back || null;
+  if (!ids.length) return;
+  R = {ids, i:0, kind, right:0, xp:0, back:back || "review"};
+  show("play");
+  reviewCard();
+}
+function leavePlay(){ const b = (R && R.back) || "review"; R = null; show(b); }
+function reviewCard(){
+  const box = $("#rPlay"); box.innerHTML = "";
+  if (R.i >= R.ids.length) return reviewDone();
+  const it = ITEMS[R.ids[R.i]];
+  if (!it) { R.i++; return reviewCard(); }
+  if (it.sent) return sentenceCard(it, box);
+  const bx0 = S.stats[it.id]?.box || 0;
+  let mode;
+  if (R.kind === "spell") mode = "spell";
+  else if (it.custom) { const o = ["mc-en"]; if (Object.values(ITEMS).filter(x => x.custom).length >= 4) o.push("mc-zh"); if (R.kind !== "review" || bx0 >= 1) o.push("spell"); mode = o[Math.floor(Math.random() * o.length)]; }
+  else mode = (/^[A-Za-z]+$/.test(it.a) && bx0 >= 1 && Math.random() < 0.5) ? "spell" : "mc-en";
+  const card = el("div", "card qcard"); card.style.setProperty("--line", lineColor(it.scene));
+  const top = el("div", "row"); top.style.marginTop = "0";
+  top.appendChild(el("span", "label", (R.i + 1) + " / " + R.ids.length + " · " + sceneLabel(it) + " · " + {spell:"拼字", "mc-en":"選英文", "mc-zh":"選中文"}[mode]));
+  const sp = el("span"); sp.style.flex = "1"; top.appendChild(sp);
+  const q = el("button", "btn small ghost", "離開"); q.onclick = leavePlay; top.appendChild(q);
+  card.appendChild(top);
+  let slot = null;
+  if (mode === "mc-zh") {
+    const w = el("div", "sent"); w.style.display = "flex"; w.style.gap = "8px"; w.style.alignItems = "center";
+    w.appendChild(el("span", "", it.a)); w.appendChild(sayBtn(() => it.a)); card.appendChild(w);
+    card.appendChild(el("div", "zh", "這個字的中文意思是？"));
+  } else if (it.t) {
+    const sent = el("div", "sent"); const parts = it.t.split("___");
+    sent.appendChild(document.createTextNode(parts[0])); slot = el("span", "blank", " "); sent.appendChild(slot); sent.appendChild(document.createTextNode(parts[1] || ""));
+    card.appendChild(sent);
+    card.appendChild(el("div", "zh", it.custom ? it.m : it.zh));
+  } else {
+    card.appendChild(el("div", "sent", it.m));
+    card.appendChild(el("div", "zh", mode === "spell" ? "拼出這個中文的英文" : "選出這個中文的英文"));
+  }
+  const fb = el("div");
+  const finish = ok => {
+    record(it.id, ok, S.stats[it.id]?.wrong ? "review" : "scene");
+    if (ok) { R.right++; const g = mode === "spell" ? 8 : 6; R.xp += g; addXP(g); }
+    if (slot) { slot.className = "filled"; slot.style.background = "var(--good-bg)"; slot.style.color = "var(--good)"; slot.textContent = it.a; }
+    speak(it.t ? fillLine(it.t, it.a) : it.a);
+    checkBadges(); save(); renderHeader();
+    const f = el("div", "feedback");
+    f.appendChild(document.createTextNode(ok ? "答對了！ " : "正確答案是 "));
+    f.appendChild(el("b", "", it.a)); f.appendChild(document.createTextNode("　" + it.m));
+    if (it.tip) f.appendChild(el("span", "tip", it.tip));
+    if (it.custom && it.zh && mode !== "mc-zh" && !it.t) f.appendChild(el("span", "tip", it.zh));
+    fb.appendChild(f);
+    const row = el("div", "row"); const nx = el("button", "btn primary", R.i + 1 >= R.ids.length ? "看結果" : "下一題");
+    nx.onclick = () => { R.i++; reviewCard(); }; row.appendChild(nx); fb.appendChild(row); nx.focus();
+  };
+  if (mode === "spell") {
+    const letters = it.a.replace(/[^A-Za-z]/g, "").length;
+    card.appendChild(el("p", "small muted", "提示：" + (it.t || it.custom === undefined ? it.m + "，" : "") + "開頭字母 " + it.a[0] + "，共 " + letters + " 個字母" + (/\s/.test(it.a) ? "（中間有空格）" : "")));
+    const f = el("form", "spell"); f.autocomplete = "off";
+    const inp = el("input"); inp.id = "spellInput"; inp.setAttribute("aria-label", "輸入拼字"); inp.setAttribute("autocapitalize", "off"); inp.spellcheck = false;
+    const go = el("button", "btn primary", "確定"); go.type = "submit";
+    f.append(inp, go);
+    f.onsubmit = e => { e.preventDefault(); const v = inp.value.trim(); if (!v) return; inp.disabled = go.disabled = true; const ok = normAns(v) === normAns(it.a); inp.style.borderColor = ok ? "var(--good)" : "var(--bad)"; finish(ok); };
+    card.appendChild(f);
+    setTimeout(() => inp.focus(), 50);
+  } else {
+    const key = mode === "mc-zh" ? "m" : "a";
+    const opts = (it.custom || key === "m") ? choicesFor(it, key) : shuffle(it.c);
+    const grid = el("div", "choices");
+    opts.forEach(opt => {
+      const b = el("button", "choice" + (key === "a" ? " en" : ""), opt); b.type = "button";
+      b.onclick = () => { grid.querySelectorAll("button").forEach(x => { x.disabled = true; if (x.textContent === it[key]) x.classList.add("right"); }); const ok = opt === it[key]; if (!ok) b.classList.add("wrong"); finish(ok); };
+      grid.appendChild(b);
+    });
+    card.appendChild(grid);
+  }
+  card.appendChild(fb);
+  box.appendChild(card);
+}
+function sentenceCard(it, box){
+  const card = el("div", "card qcard"); card.style.setProperty("--line", "var(--accent)");
+  const top = el("div", "row"); top.style.marginTop = "0";
+  top.appendChild(el("span", "label", (R.i + 1) + " / " + R.ids.length + " · " + sceneLabel(it) + " · 句子重組"));
+  const sp = el("span"); sp.style.flex = "1"; top.appendChild(sp);
+  const q = el("button", "btn small ghost", "離開"); q.onclick = leavePlay; top.appendChild(q);
+  card.appendChild(top);
+  card.appendChild(el("div", "sent zhq", it.m));
+  const words = it.a.replace(/["“”]/g, "").trim().split(/\s+/);
+  const endM = (words[words.length - 1].match(/[.!?]+$/) || [""])[0];
+  words[words.length - 1] = words[words.length - 1].replace(/[.!?]+$/, "");
+  card.appendChild(el("p", "small muted", "點下面的字，依正確順序排好（共 " + words.length + " 個字）"));
+  const built = el("div", "built"), ph = el("span", "ph", "從下面點字放到這裡"), end = el("span", "endmark", endM);
+  built.append(ph, end);
+  const pool = el("div", "pool");
+  let order = shuffle(words.map((w, i) => i));
+  if (words.length > 2) for (let k = 0; k < 5 && order.every((v, i) => v === i); k++) order = shuffle(order);
+  const placed = [];
+  const check = el("button", "btn primary", "確定"); check.disabled = true;
+  const refresh = () => { ph.hidden = placed.length > 0; check.disabled = placed.length !== words.length; };
+  order.forEach(i => {
+    const c = el("button", "chip", words[i]); c.type = "button";
+    c.onclick = () => {
+      if (c.parentNode === pool) { built.insertBefore(c, end); placed.push(i); }
+      else { pool.appendChild(c); placed.splice(placed.indexOf(i), 1); }
+      refresh();
+    };
+    pool.appendChild(c);
+  });
+  card.append(built, pool);
+  const hintRow = el("div", "row");
+  const clear = el("button", "btn small ghost", "全部重排"); clear.onclick = () => { [...built.querySelectorAll(".chip")].forEach(c => pool.appendChild(c)); placed.length = 0; refresh(); };
+  const hint = el("button", "btn small ghost", "看文法提示");
+  if (it.note) hint.onclick = () => { hint.replaceWith(el("span", "small muted", it.note)); }; else hint.hidden = true;
+  hintRow.append(check, clear, hint); card.appendChild(hintRow);
+  const fb = el("div");
+  check.onclick = () => {
+    const mine = placed.map(i => words[i]).join(" ");
+    const ok = normSent(mine) === normSent(it.a);
+    card.querySelectorAll(".chip,.btn").forEach(b => { if (b !== q) b.disabled = true; });
+    built.style.borderColor = ok ? "var(--good)" : "var(--bad)";
+    record(it.id, ok, S.stats[it.id]?.wrong ? "review" : "scene");
+    if (ok) { R.right++; R.xp += 10; addXP(10); }
+    speak(it.a); checkBadges(); save(); renderHeader();
+    const f = el("div", "feedback");
+    f.appendChild(document.createTextNode(ok ? "答對了！ " : "正確的句子是 "));
+    f.appendChild(el("b", "", it.a));
+    if (it.note) f.appendChild(el("span", "tip", it.note));
+    const say = sayBtn(() => it.a); say.style.verticalAlign = "middle"; f.appendChild(say);
+    fb.appendChild(f);
+    const row = el("div", "row"); const nx = el("button", "btn primary", R.i + 1 >= R.ids.length ? "看結果" : "下一題");
+    nx.onclick = () => { R.i++; reviewCard(); }; row.appendChild(nx); fb.appendChild(row); nx.focus();
+  };
+  card.appendChild(fb);
+  box.appendChild(card);
+}
+function openStudy(gid){
+  const g = (S.custom || []).find(x => x.id === gid); if (!g) return;
+  R = null; PB = "custom"; show("play");
+  const key = "c:" + gid, box = $("#rPlay"); box.innerHTML = "";
+  const phr = groupItems(key).filter(isPhraseWord).sort((a, b) => (/補充/.test(a.m) ? 1 : 0) - (/補充/.test(b.m) ? 1 : 0)), sen = sentItems(key);
+  const wrap = el("div", "stage"); wrap.style.display = "grid"; wrap.style.gap = "16px";
+  const head = el("div", "scene-head"); head.style.marginBottom = "0";
+  head.appendChild(el("h2", "", "片語與佳句")); head.appendChild(el("span", "muted", g.name));
+  head.appendChild(el("span", "grow")); const bk = el("button", "btn small ghost", "回我的單字"); bk.onclick = () => { PB = null; show("custom"); }; head.appendChild(bk);
+  wrap.appendChild(head);
+  const pc = el("div", "card");
+  const pt = el("div", "row"); pt.style.marginTop = "0"; pt.appendChild(el("h3", "rd-h", "片語 · " + phr.length)); pt.lastChild.style.marginBottom = "0"; pt.lastChild.style.marginRight = "auto";
+  const pb = el("button", "btn small primary", "練片語"); pb.disabled = !phr.length; pb.onclick = () => startReview(shuffle(phr.map(x => x.id)).slice(0, 15), "practice", "custom");
+  pt.appendChild(pb); pc.appendChild(pt);
+  if (!phr.length) pc.appendChild(el("p", "small muted", "這組還沒有片語。編輯單字時，有空格的詞會自動算成片語。"));
+  else {
+    const tw = el("div", "tablewrap"), tb = el("table", "wlist study");
+    phr.forEach(x => {
+      const tr = el("tr"), w = el("td", "w"); w.appendChild(document.createTextNode(x.a + " ")); w.appendChild(sayBtn(() => x.a)); w.lastChild.style.verticalAlign = "middle";
+      const m = el("td"), mm = el("div", "s-zh");
+      mm.style.color = "var(--ink)"; mm.style.marginTop = "0";
+      if (/補充/.test(x.m)) mm.appendChild(el("span", "srcchip", "補充"));
+      else if (/^（片/.test(x.m)) mm.appendChild(el("span", "srcchip srcbook", "片語精華"));
+      mm.appendChild(document.createTextNode(x.m.replace(/^（片[^）]*）/, "")));
+      m.appendChild(mm); if (x.zh) m.appendChild(el("div", "small muted en", x.zh));
+      tr.append(w, m); tb.appendChild(tr);
+    });
+    tw.appendChild(tb); pc.appendChild(tw);
+  }
+  wrap.appendChild(pc);
+  const sc = el("div", "card");
+  const st = el("div", "row"); st.style.marginTop = "0"; st.appendChild(el("h3", "rd-h", "佳句 · " + sen.length)); st.lastChild.style.marginBottom = "0"; st.lastChild.style.marginRight = "auto";
+  const sb = el("button", "btn small primary", "句子重組練習"); sb.disabled = !sen.length; sb.onclick = () => startReview(shuffle(sen.map(x => x.id)).slice(0, 10), "practice", "custom");
+  st.appendChild(sb); sc.appendChild(st);
+  if (!sen.length) sc.appendChild(el("p", "small muted", "這組還沒有佳句。按「編輯」，在佳句欄一行貼一句：英文 | 中文 | 文法說明。"));
+  sen.forEach(x => {
+    const it = el("div", "sitem");
+    const en = el("div", "s-en"); en.appendChild(document.createTextNode(x.a + " ")); const sv = sayBtn(() => x.a); sv.style.verticalAlign = "middle"; en.appendChild(sv);
+    it.appendChild(en);
+    const zh = el("div", "s-zh"); if (x.src) zh.appendChild(el("span", "srcchip" + (/^補充/.test(x.src) ? "" : " srcbook"), x.src)); zh.appendChild(document.createTextNode(x.m)); it.appendChild(zh);
+    if (x.note) it.appendChild(el("div", "s-note", x.note));
+    sc.appendChild(it);
+  });
+  wrap.appendChild(sc);
+  box.appendChild(wrap);
+}
+function reviewDone(){
+  const box = $("#rPlay"); box.innerHTML = "";
+  const c = el("div", "card result qcard");
+  c.appendChild(el("div", "label", "複習完成"));
+  c.appendChild(el("h3", "", "答對 " + R.right + " / " + R.ids.length));
+  c.appendChild(el("p", "muted", "獲得 " + R.xp + " XP。錯題連續答對 3 次就會移出錯題本。"));
+  const row = el("div", "row"); const b = el("button", "btn primary", R.back === "custom" ? "回我的單字" : "回錯題本"); b.onclick = leavePlay; row.appendChild(b); c.appendChild(row);
+  box.appendChild(c);
+}
+
+/* ========== MY WORDS ========== */
+let editing = null;
+function updateParse(){
+  const {ok, bad} = parseWords($("#cWords").value), p = $("#cParse"); p.innerHTML = "";
+  if (!ok.length && !bad.length) return;
+  p.appendChild(el("span", "ok", "讀到 " + ok.length + " 個字"));
+  if (bad.length) p.appendChild(el("span", "bad", "　第 " + bad.slice(0, 8).join("、") + (bad.length > 8 ? " 等" : "") + " 行格式不對，需要「英文, 中文」"));
+}
+$("#cWords").addEventListener("input", updateParse);
+function updateSParse(){
+  const {ok, bad} = parseSents($("#cSents").value), p = $("#cSParse"); p.innerHTML = "";
+  if (!ok.length && !bad.length) return;
+  p.appendChild(el("span", "ok", "讀到 " + ok.length + " 句"));
+  if (bad.length) p.appendChild(el("span", "bad", "　第 " + bad.slice(0, 8).join("、") + " 行格式不對，需要「英文 | 中文」"));
+}
+$("#cSents").addEventListener("input", updateSParse);
+function resetForm(){ editing = null; $("#cName").value = ""; $("#cWords").value = ""; $("#cParse").innerHTML = ""; $("#cSents").value = ""; $("#cSParse").innerHTML = ""; $("#cFormTitle").textContent = "新增一組單字"; $("#cSave").textContent = "儲存"; $("#cCancel").hidden = true; }
+$("#cCancel").onclick = resetForm;
+$("#cSave").onclick = () => {
+  const {ok, bad} = parseWords($("#cWords").value);
+  if (!ok.length) { $("#cParse").innerHTML = ""; $("#cParse").appendChild(el("span", "bad", "還沒有讀到單字。每行打「英文, 中文」，例如 borrow, 借入")); return; }
+  if (ok.length > 200) { $("#cParse").innerHTML = ""; $("#cParse").appendChild(el("span", "bad", "一組最多 200 個字，請分成兩組。")); return; }
+  const sp = parseSents($("#cSents").value);
+  if (sp.ok.length > 80) { $("#cSParse").innerHTML = ""; $("#cSParse").appendChild(el("span", "bad", "一組最多 80 句。")); return; }
+  const name = $("#cName").value.trim() || ("第 " + ((S.custom || []).length + 1) + " 組");
+  S.custom = S.custom || [];
+  let g = editing && S.custom.find(x => x.id === editing);
+  if (g) {
+    const old = new Map(g.words.map(w => [normAns(w.w), w.id]));
+    const keep = new Set();
+    g.words = ok.map(w => { const id = old.get(normAns(w.w)) || rid(); keep.add(id); return {id, w:w.w, zh:w.zh, ex:w.ex}; });
+    old.forEach(id => { if (!keep.has(id)) delete S.stats["c-" + g.id + "-" + id]; });
+    const oldS = new Map((g.sentences || []).map(x => [normSent(x.en), x])), keepS = new Set();
+    g.sentences = sp.ok.map(x => { const o = oldS.get(normSent(x.en)); const id = o ? o.id : rid(); keepS.add(id); return {id, en:x.en, zh:x.zh, note:x.note, src:o ? o.src || "" : ""}; });
+    oldS.forEach(o => { if (!keepS.has(o.id)) delete S.stats["s-" + g.id + "-" + o.id]; });
+    g.name = name;
+  } else {
+    if (S.custom.length >= 40) { $("#cParse").innerHTML = ""; $("#cParse").appendChild(el("span", "bad", "最多 40 組，請先刪掉不用的組。")); return; }
+    g = {id:rid(), name, created:Date.now(), chats:0, words:ok.map(w => ({id:rid(), w:w.w, zh:w.zh, ex:w.ex})), sentences:sp.ok.map(x => ({id:rid(), en:x.en, zh:x.zh, note:x.note, src:""}))};
+    S.custom.unshift(g);
+  }
+  applyPacks(); rebuildCustomItems(); save();
+  toast((editing ? "已更新「" : "已新增「") + name + "」，共 " + ok.length + " 個字" + (bad.length ? "，有 " + bad.length + " 行沒讀到" : ""));
+  resetForm(); renderCustom(); renderHeader();
+};
+function renderCustom(){
+  const box = $("#cGroups"); box.innerHTML = "";
+  const groups = S.custom || [];
+  if (!groups.length) { box.appendChild(el("div", "empty", "還沒有自訂單字。把課本某一課的單字表打進左邊，一行一個，存好後這裡就會出現練習按鈕。")); return; }
+  groups.forEach(g => {
+    const key = "c:" + g.id, items = groupItems(key);
+    const mastered = items.filter(x => S.stats[x.id] && S.stats[x.id].right > 0 && S.stats[x.id].box >= 3).length;
+    const weak = items.filter(x => S.stats[x.id] && isWeak(S.stats[x.id])).length;
+    const c = el("div", "card grp");
+    const t = el("div", "grp-top"); t.appendChild(el("h3", "", g.name));
+    const nPh = items.filter(isPhraseWord).length, sen = sentItems(key);
+    t.appendChild(el("span", "sub", (items.length - nPh) + " 個單字、" + nPh + " 個片語" + (sen.length ? "、" + sen.length + " 句佳句" : "") + " · 精熟 " + mastered + (weak ? " · 錯題 " + weak : "") + (g.chats ? " · 對話 " + g.chats + " 次" : "")));
+    c.appendChild(t);
+    const bar = el("div", "bar"), fill = el("i"); fill.style.width = (items.length ? mastered / items.length * 100 : 0) + "%"; bar.appendChild(fill); c.appendChild(bar);
+    c.appendChild(el("div", "grp-words", items.slice(0, 12).map(x => x.a).join(" · ") + (items.length > 12 ? " …" : "")));
+    const row = el("div", "row"); row.style.marginTop = "4px";
+    const b1 = el("button", "btn small primary", "練習"); b1.onclick = () => startReview(shuffle(items.map(x => x.id)).slice(0, 15), "practice", "custom");
+    const b2 = el("button", "btn small", "拼字"); b2.onclick = () => startReview(shuffle(items.map(x => x.id)).slice(0, 10), "spell", "custom");
+    const b3 = el("button", "btn small", "AI 對話"); b3.onclick = () => startAI(key);
+    if (items.length < 2) b3.disabled = true;
+    const sp = el("span"); sp.style.flex = "1";
+    const b4 = el("button", "btn small ghost", "編輯"); b4.onclick = () => {
+      editing = g.id; $("#cName").value = g.name;
+      $("#cWords").value = g.words.map(w => [w.w, w.zh, w.ex].filter(Boolean).join(", ")).join("\n");
+      $("#cSents").value = (g.sentences || []).map(x => [x.en, x.zh, x.note].filter(Boolean).join(" | ")).join("\n"); updateSParse();
+      $("#cFormTitle").textContent = "編輯「" + g.name + "」"; $("#cSave").textContent = "儲存變更"; $("#cCancel").hidden = false;
+      updateParse(); $("#cName").scrollIntoView({block:"center", behavior:"smooth"}); $("#cWords").focus();
+    };
+    const b5 = el("button", "btn small ghost", "刪除"); b5.style.color = "var(--bad)"; b5.onclick = () => confirmBox("刪除「" + g.name + "」？", "這組的 " + items.length + " 個字、閱讀測驗和練習紀錄都會刪除，無法復原。", "刪除", () => {
+      items.forEach(x => delete S.stats[x.id]);
+      S.custom = S.custom.filter(x => x.id !== g.id);
+      if (editing === g.id) resetForm();
+      rebuildCustomItems(); save(); renderCustom(); renderHeader(); toast("已刪除");
+    });
+    const b7 = el("button", "btn small", "片語與佳句"); b7.onclick = () => openStudy(g.id);
+    const nR = (g.readings || []).length;
+    const b6 = el("button", "btn small", "閱讀測驗" + (nR ? " · " + nR : "")); b6.onclick = () => openReading(g.id);
+    row.append(b1, b2, b7, b6, b3, sp, b4, b5); c.appendChild(row);
+    box.appendChild(c);
+  });
+}
+function confirmBox(title, text, yesLabel, onYes){
+  const lay = $("#layer"); lay.innerHTML = "";
+  const ov = el("div", "overlay"), c = el("div", "card dialog");
+  c.appendChild(el("h3", "", title)); c.appendChild(el("p", "small muted", text));
+  const row = el("div", "row");
+  const yes = el("button", "btn", yesLabel); yes.style.color = "var(--bad)"; yes.style.borderColor = "var(--bad)";
+  const no = el("button", "btn primary", "取消");
+  yes.onclick = () => { lay.innerHTML = ""; onYes(); };
+  no.onclick = () => { lay.innerHTML = ""; };
+  row.append(no, yes); c.appendChild(row); ov.appendChild(c); lay.appendChild(ov); no.focus();
+}
+
+/* ========== READING ========== */
+const RTYPES = [["dialogue","對話"],["story","短文"],["notice","公告"],["email","電子郵件"],["diary","日記"]];
+const KIND = {textbook:"課文", ai:"AI 文章", paste:"自貼文章"};
+let RD = null;
+function openReading(gid){ RD = {gid, mode:"list", type:"random", busy:false}; show("read"); }
+function curGroup(){ return RD && (S.custom || []).find(g => g.id === RD.gid); }
+$("#rdBack").onclick = () => { try { speechSynthesis.cancel(); } catch(e) {} if (RD && RD.ctl) RD.ctl.abort(); RD = null; show("custom"); };
+function renderRead(){
+  const g = curGroup(), body = $("#rdBody"); body.innerHTML = "";
+  if (!g) { RD = null; show("custom"); return; }
+  g.readings = g.readings || [];
+  $("#rdGroup").textContent = g.name;
+  const r = RD.mode === "play" && g.readings.find(x => x.id === RD.rid);
+  if (r) renderReadPlay(g, r, body); else { RD.mode = "list"; renderReadList(g, body); }
+}
+function renderReadList(g, body){
+  const aiOff = !sampleFn && sampleState !== "pending";
+  const lc = el("div", "card"); lc.appendChild(el("h3", "rd-h", "已存的文章"));
+  if (!g.readings.length) lc.appendChild(el("p", "small muted", "還沒有文章，用下面兩種方式出一篇。"));
+  g.readings.forEach(r => {
+    const qn = r.qs.filter(q => !q.flag).length;
+    const row = el("div", "rd-row"), info = el("div", "rd-info");
+    info.appendChild(el("div", "rd-title en", r.title));
+    info.appendChild(el("div", "small muted", (KIND[r.kind] || "") + " · " + qn + " 題 · " + (r.tries ? "最佳 " + Math.min(r.best, qn) + "/" + qn + "，做過 " + r.tries + " 次" : "還沒作答")));
+    const acts = el("div", "stop-actions");
+    const go = el("button", "btn small primary", r.tries ? "再做一次" : "作答"); go.onclick = () => { RD.mode = "play"; RD.rid = r.id; renderRead(); scrollTo({top:0}); };
+    const del = el("button", "btn small ghost", "刪除"); del.style.color = "var(--bad)";
+    del.onclick = () => confirmBox("刪除「" + r.title + "」？", "這篇文章和題目會刪除，無法復原。", "刪除", () => { g.readings = g.readings.filter(x => x.id !== r.id); save(); renderRead(); });
+    if (!qn) go.disabled = true;
+    acts.append(go, del); row.append(info, acts); lc.appendChild(row);
+  });
+  body.appendChild(lc);
+  if (aiOff) body.appendChild(el("div", "notice", AI_HOST_MSG + "已存的文章還是可以作答。"));
+
+  const gen = el("div", "card"); gen.appendChild(el("h3", "rd-h", "AI 出一篇新文章"));
+  gen.appendChild(el("p", "small muted", "用這組的單字寫一篇會考程度的短文，附 4 題選擇題和中文解析，大約要等半分鐘。"));
+  const seg = el("div", "seg"); seg.setAttribute("role", "group"); seg.setAttribute("aria-label", "文章類型");
+  [["random","隨機"]].concat(RTYPES).forEach(([k, l]) => {
+    const b = el("button", "segb", l); b.type = "button"; b.setAttribute("aria-pressed", String(RD.type === k));
+    b.onclick = () => { RD.type = k; seg.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b))); };
+    seg.appendChild(b);
+  });
+  gen.appendChild(seg);
+  const f = el("div", "field"), lab = el("label", "", "本課文法重點（選填）"), inp = el("input");
+  lab.htmlFor = "rdFocus"; inp.id = "rdFocus"; inp.maxLength = 80; inp.placeholder = "例如：過去進行式、先分後時的時間說法"; inp.value = g.focus || "";
+  inp.onchange = () => { g.focus = inp.value.trim(); save(); };
+  f.append(lab, inp); gen.appendChild(f);
+  const st1 = el("div", "rd-status"), b1 = el("button", "btn primary", "出一篇");
+  b1.onclick = () => { g.focus = inp.value.trim(); genReading(g, null, b1, st1); };
+  const r1 = el("div", "row"); r1.appendChild(b1); gen.append(r1, st1);
+  body.appendChild(gen);
+
+  const pc = el("div", "card"); pc.appendChild(el("h3", "rd-h", "用課文出題"));
+  pc.appendChild(el("p", "small muted", "把課文或其他英文文章貼進來，AI 會針對內容出 4 題。"));
+  const ta = el("textarea", "wordsin"); ta.id = "rdPaste"; ta.style.minHeight = "140px"; ta.maxLength = 3000; ta.spellcheck = false;
+  ta.placeholder = "Amy: What are you doing this weekend?\nBen: I'm going to visit my grandma.";
+  const st2 = el("div", "rd-status"), b2 = el("button", "btn", "出題");
+  b2.onclick = () => { const t = ta.value.trim(); if (t.length < 60) { st2.textContent = "文章太短，至少貼兩三句。"; return; } genReading(g, t, b2, st2, ta); };
+  const r2 = el("div", "row"); r2.appendChild(b2); pc.append(ta, r2, st2);
+  body.appendChild(pc);
+  if (aiOff) { b1.disabled = true; b2.disabled = true; }
+}
+const QRULES = "Write 4 multiple-choice questions in 會考 style, in English: one about the main idea or purpose, two about details, and one inference or word-meaning-in-context question. Each question has 4 options and exactly one correct answer. The correct answer must be provable from the passage; wrong options must be clearly wrong according to the passage but tempting for a careless reader. Before you reply, re-read the passage and check every answer key. \"why\" is a Traditional Chinese (Taiwan) explanation of at most 40 characters that points to the evidence in the passage. \"answer\" is the index (0-3) of the correct option.";
+function cleanQs(list){
+  if (!Array.isArray(list)) return [];
+  return list.map(q => {
+    if (!q || typeof q.q !== "string" || !Array.isArray(q.options)) return null;
+    const o = q.options.map(x => String(x).trim()).filter(Boolean), a = Number(q.answer);
+    if (o.length !== 4 || new Set(o.map(x => x.toLowerCase())).size !== 4 || !Number.isInteger(a) || a < 0 || a > 3) return null;
+    const idx = shuffle([0,1,2,3]);
+    return {q:q.q.trim().slice(0, 240), o:idx.map(i => o[i].slice(0, 160)), a:idx.indexOf(a), why:String(q.why || "").trim().slice(0, 90)};
+  }).filter(Boolean).slice(0, 5);
+}
+async function genReading(g, pasted, btn, status, ta){
+  if (!sampleFn || RD.busy) return;
+  RD.busy = true; btn.disabled = true;
+  const ctl = new AbortController(); RD.ctl = ctl;
+  status.innerHTML = "";
+  status.appendChild(el("span", "thinking", pasted ? "正在出題…" : "正在寫文章和出題…"));
+  const stop = el("button", "btn small ghost", "停止"); stop.onclick = () => ctl.abort(); status.appendChild(stop);
+  const words = g.words.map(w => w.w + " (" + w.zh.replace(/（[^）]*）/g, "").trim() + ")");
+  const type = RD.type === "random" ? RTYPES[Math.floor(Math.random() * RTYPES.length)][0] : RD.type;
+  const typeEn = {dialogue:"a dialogue between two or three people", story:"a short story", notice:"a school notice or poster", email:"an email to a friend", diary:"a diary entry"}[type];
+  const head = "You write English reading tests for a Taiwanese 8th-grade student (國中教育會考 level, CEFR A2).";
+  const prompt = pasted ? [
+    head,
+    "Here is a passage from the student's textbook or another source, between <<< and >>>:",
+    "<<<", pasted.slice(0, 3000), ">>>",
+    "Ask only about what this passage says. " + QRULES,
+    'Reply with ONLY JSON: {"title": string, "questions": [{"q": string, "options": [string, string, string, string], "answer": number, "why": string}]}',
+    "title is a short English title for the passage."
+  ] : [
+    head,
+    "Write ONE original passage of 120-170 words. Text type: " + typeEn + ".",
+    "Use at least 6 of these words or phrases from the student's textbook lesson, naturally (any verb form is fine): " + words.join("; ") + ".",
+    g.focus ? "Grammar focus of the lesson, use it several times where natural: " + g.focus + "." : "",
+    "Keep all other vocabulary within Taiwan's junior high basic 2000 words. Keep it school-appropriate. Do not copy published text.",
+    type === "dialogue" ? "Put each turn on its own line as \"Name: words\"." : "Use short paragraphs separated by line breaks.",
+    "Then: " + QRULES,
+    'Reply with ONLY JSON: {"title": string, "text": string, "questions": [{"q": string, "options": [string, string, string, string], "answer": number, "why": string}]}',
+    "title is a short English title."
+  ];
+  try {
+    const data = await sampleFn.json(prompt.filter(Boolean).join("\n"), {signal:ctl.signal, cache:false});
+    const qs = cleanQs(data && data.questions);
+    const text = pasted || (data && typeof data.text === "string" ? data.text.trim() : "");
+    if (qs.length < 3 || text.length < 40) throw {code:"invalid_json"};
+    const r = {id:rid(), kind:pasted ? "paste" : "ai", title:String((data && data.title) || "Reading").slice(0, 60), text:text.slice(0, 3000), qs, best:0, tries:0, created:Date.now()};
+    g.readings = g.readings || [];
+    g.readings.unshift(r);
+    if (g.readings.length > 12) g.readings.length = 12;
+    save();
+    if (ta) ta.value = "";
+    RD.busy = false;
+    if (view === "read" && RD && RD.gid === g.id) { RD.mode = "play"; RD.rid = r.id; renderRead(); scrollTo({top:0}); }
+    else toast("「" + r.title + "」出好了，到閱讀測驗作答。");
+  } catch(e) {
+    const code = e && e.code;
+    status.innerHTML = "";
+    if (code === "cancelled") status.textContent = "已停止。";
+    else if (["not_granted","sampling_disabled","not_declared","capability_disabled","capability_removed"].includes(code)) { sampleFn = null; sampleState = "none"; status.textContent = "這個頁面目前不能使用 AI 出題，已存的文章還是可以作答。"; }
+    else if (code === "rate_limited") status.textContent = "使用次數暫時太多，休息一下再試。";
+    else if (code === "session_expired") status.textContent = "登入已過期，請重新登入 Claude 後再開啟頁面。";
+    else if (code === "refused") status.textContent = "這篇內容沒辦法出題，換一篇試試。";
+    else status.textContent = "出題失敗，請再按一次。";
+  } finally {
+    if (RD) RD.busy = false;
+    btn.disabled = false;
+  }
+}
+function passageNode(text, g){
+  const wrap = el("div", "passage");
+  const words = g.words.map(w => w.w).sort((a, b) => b.length - a.length);
+  const esc = x => x.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/\s+/g, "\\s+");
+  const re = words.length ? new RegExp("\\b(" + words.map(esc).join("|") + ")(?:s|es|ed|d|ing)?\\b", "gi") : null;
+  const byKey = new Map(g.words.map(w => [normAns(w.w), w]));
+  text.split(/\n+/).forEach(raw => {
+    const line = raw.trim(); if (!line) return;
+    const p = el("p");
+    if (/^\(.*\)$/.test(line)) { p.className = "dir"; p.textContent = line; wrap.appendChild(p); return; }
+    let rest = line;
+    const m = line.match(/^([A-Z][A-Za-z.' ]{0,18}):\s+(.*)$/);
+    if (m) { p.appendChild(el("span", "spk", m[1] + ":")); rest = m[2]; }
+    if (!re) p.appendChild(document.createTextNode(rest));
+    else {
+      let last = 0;
+      rest.replace(re, (full, base, off) => {
+        p.appendChild(document.createTextNode(rest.slice(last, off)));
+        const w = byKey.get(normAns(base));
+        const b = el("button", "kw", full); b.type = "button";
+        b.onclick = () => { speak(w ? w.w : full); toast((w ? w.w : full) + "　" + (w ? w.zh : "")); };
+        p.appendChild(b); last = off + full.length; return full;
+      });
+      p.appendChild(document.createTextNode(rest.slice(last)));
+    }
+    wrap.appendChild(p);
+  });
+  return wrap;
+}
+function renderReadPlay(g, r, body){
+  const qs = r.qs.filter(q => !q.flag);
+  const st = {answered:0, right:0, total:qs.length};
+  const pc = el("div", "card"), top = el("div", "row"); top.style.marginTop = "0";
+  top.appendChild(el("h3", "en rd-ptitle", r.title));
+  const listen = el("button", "btn small", "朗讀全文");
+  listen.onclick = () => { try { if (speechSynthesis.speaking) { speechSynthesis.cancel(); return; } } catch(e) {} speak(r.text.split(/\n+/).filter(x => !/^\s*\(.*\)\s*$/.test(x)).join(" ")); };
+  if (!canSpeak) listen.hidden = true;
+  const back = el("button", "btn small ghost", "回列表"); back.onclick = () => { try { speechSynthesis.cancel(); } catch(e) {} RD.mode = "list"; renderRead(); scrollTo({top:0}); };
+  top.append(listen, back); pc.appendChild(top);
+  pc.appendChild(el("p", "small muted", (KIND[r.kind] || "") + " · 畫底線的是這組的單字，點一下看意思"));
+  pc.appendChild(passageNode(r.text, g));
+  body.appendChild(pc);
+  const ql = el("div", "qlist");
+  qs.forEach((q, i) => {
+    const c = el("div", "card q");
+    c.appendChild(el("h4", "", (i + 1) + ". " + q.q));
+    const grid = el("div", "choices"), order = shuffle([0,1,2,3]);
+    order.forEach((oi, k) => {
+      const b = el("button", "choice en", "(" + "ABCD"[k] + ") " + q.o[oi]); b.type = "button"; b.dataset.oi = oi;
+      b.onclick = () => {
+        grid.querySelectorAll("button").forEach(x => { x.disabled = true; if (+x.dataset.oi === q.a) x.classList.add("right"); });
+        const ok = oi === q.a; if (!ok) b.classList.add("wrong");
+        const d = today(); d.q++; if (ok) { d.c++; st.right++; addXP(8); }
+        st.answered++;
+        const fb = el("div", "feedback");
+        fb.appendChild(el("b", "", ok ? "答對了" : "答案是 (" + "ABCD"[order.indexOf(q.a)] + ")"));
+        if (q.why) fb.appendChild(el("span", "tip", q.why));
+        const flag = el("button", "linkbtn", "這題怪怪的");
+        flag.onclick = () => { q.flag = true; save(); flag.replaceWith(el("span", "tip", "已標記，下次不會再出這題。")); };
+        fb.appendChild(flag);
+        c.appendChild(fb);
+        save(); renderHeader();
+        if (st.answered === st.total) finishReading(g, r, st, body);
+      };
+      grid.appendChild(b);
+    });
+    c.appendChild(grid); ql.appendChild(c);
+  });
+  body.appendChild(ql);
+}
+function finishReading(g, r, st, body){
+  r.tries = (r.tries || 0) + 1; r.best = Math.max(r.best || 0, st.right);
+  S.read = S.read || {n:0, q:0, c:0, perfect:0};
+  S.read.n++; S.read.q += st.total; S.read.c += st.right;
+  if (st.right === st.total) S.read.perfect = (S.read.perfect || 0) + 1;
+  addXP(15); checkBadges(); save(); renderHeader();
+  const c = el("div", "card result");
+  c.appendChild(el("div", "label", "閱讀完成"));
+  c.appendChild(el("h3", "", "答對 " + st.right + " / " + st.total));
+  c.appendChild(el("p", "muted", (st.right === st.total ? "全對！" : "答錯的題目，回文章找出證據句再看一次。") + "獲得 " + (st.right * 8 + 15) + " XP。"));
+  const row = el("div", "row");
+  const again = el("button", "btn primary", "再做一次"); again.onclick = () => { renderRead(); scrollTo({top:0}); };
+  const list = el("button", "btn", "回文章列表"); list.onclick = () => { RD.mode = "list"; renderRead(); scrollTo({top:0}); };
+  row.append(again, list); c.appendChild(row);
+  body.appendChild(c);
+  c.scrollIntoView({block:"nearest", behavior:"smooth"});
+}
+
+/* ========== REPORT ========== */
+function fmtMin(sec){ const m = Math.round(sec / 60); return m < 60 ? m + " 分" : Math.floor(m / 60) + " 小時 " + (m % 60) + " 分"; }
+function renderReport(){
+  const T = totals(S), acc = T.q ? Math.round(T.c / T.q * 100) : 0;
+  const mastered = Object.entries(S.stats).filter(([id, st]) => ITEMS[id] && st.right > 0 && st.box >= 3).length;
+  const weak = weakIds();
+  $("#repDate").textContent = "更新至 " + dkey().replace(/-/g, "/");
+  const k = $("#kpis"); k.innerHTML = "";
+  [["累計練習", T.q + " 題", "答對率 " + acc + "%"], ["練習時間", fmtMin(T.sec), "連續 " + streak(S) + " 天"], ["已精熟", mastered + " / " + Object.keys(ITEMS).length, "單字片語"], ["待加強", weak.length + " 題", dueIds().length + " 題今天到期"]].forEach(([l, v, s]) => {
+    const c = el("div", "card kpi"); c.append(el("span", "label", l), el("strong", "", v), el("span", "sub", s)); k.appendChild(c);
+  });
+  // 14-day chart
+  const days = []; for (let i = 13; i >= 0; i--) { const t = Date.now() - i * DAY; const d = S.days[dkey(t)] || {q:0, c:0}; days.push({k:dkey(t), q:d.q, c:d.c}); }
+  const max = Math.max(GOAL, ...days.map(d => d.q)); const top = Math.ceil(max / 10) * 10;
+  const W = 560, H = 210, L = 34, B = 26, Tp = 12, bw = (W - L - 8) / 14;
+  const y = v => Tp + (H - Tp - B) * (1 - v / top);
+  let svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="近14天每日練習題數長條圖">';
+  [0, top / 2, top].forEach(v => { svg += '<line x1="' + L + '" x2="' + (W - 4) + '" y1="' + y(v) + '" y2="' + y(v) + '" stroke="var(--rule)" stroke-width="1"/><text x="' + (L - 6) + '" y="' + (y(v) + 4) + '" text-anchor="end" font-size="11" fill="var(--muted)" font-family="JetBrains Mono,monospace">' + v + '</text>'; });
+  svg += '<line x1="' + L + '" x2="' + (W - 4) + '" y1="' + y(GOAL) + '" y2="' + y(GOAL) + '" stroke="var(--warn)" stroke-width="1.5" stroke-dasharray="4 4"/><text x="' + (W - 6) + '" y="' + (y(GOAL) - 5) + '" text-anchor="end" font-size="11" fill="var(--warn)">每日目標 ' + GOAL + '</text>';
+  days.forEach((d, i) => {
+    const x = L + 4 + i * bw, w = bw - 8;
+    if (d.q > 0) {
+      svg += '<rect x="' + x + '" y="' + y(d.q) + '" width="' + w + '" height="' + (y(0) - y(d.q)) + '" rx="3" fill="var(--rule)"/>';
+      svg += '<rect x="' + x + '" y="' + y(d.c) + '" width="' + w + '" height="' + (y(0) - y(d.c)) + '" rx="3" fill="var(--accent)"><title>' + d.k + '：' + d.q + ' 題，答對 ' + d.c + '</title></rect>';
+    }
+    if (i % 2 === 1 || i === 13) svg += '<text x="' + (x + w / 2) + '" y="' + (H - 8) + '" text-anchor="middle" font-size="10.5" fill="var(--muted)" font-family="JetBrains Mono,monospace">' + d.k.slice(5).replace("-", "/") + '</text>';
+  });
+  svg += '</svg>';
+  $("#chart14").innerHTML = svg + '<p class="small muted" style="margin:6px 0 0"><span style="display:inline-block;width:10px;height:10px;background:var(--accent);border-radius:2px"></span> 答對　<span style="display:inline-block;width:10px;height:10px;background:var(--rule);border-radius:2px"></span> 答錯</p>';
+  // lines progress
+  const lp = $("#linesProg"); lp.innerHTML = "";
+  SCENES.forEach(s => {
+    const ids = s.lines.filter(l => l.a).map(l => l.id);
+    const m = ids.filter(id => S.stats[id] && S.stats[id].right > 0 && S.stats[id].box >= 3).length;
+    const row = el("div", "lp"); row.style.setProperty("--line", lineColor(s.id));
+    const bar = el("div", "bar"), fill = el("i"); fill.style.width = (m / ids.length * 100) + "%"; bar.appendChild(fill);
+    const prog = S.scenes[s.id];
+    row.append(el("span", "", s.zh + (prog?.chats ? " · 對話" + prog.chats : "")), bar, el("span", "mono", m + "/" + ids.length));
+    lp.appendChild(row);
+  });
+  (S.custom || []).forEach(g => {
+    const items = groupItems("c:" + g.id); if (!items.length) return;
+    const m = items.filter(x => S.stats[x.id] && S.stats[x.id].right > 0 && S.stats[x.id].box >= 3).length;
+    const row = el("div", "lp"); row.style.setProperty("--line", "var(--accent)");
+    const bar = el("div", "bar"), fill = el("i"); fill.style.width = (m / items.length * 100) + "%"; bar.appendChild(fill);
+    row.append(el("span", "", g.name), bar, el("span", "mono", m + "/" + items.length));
+    lp.appendChild(row);
+  });
+  if (S.read?.n) lp.appendChild(el("p", "small muted", "閱讀測驗：完成 " + S.read.n + " 篇，答對 " + S.read.c + " / " + S.read.q + " 題"));
+  // weak table
+  const wt = $("#weakTable"); wt.innerHTML = "";
+  const weakSorted = Object.entries(S.stats).filter(([id, st]) => ITEMS[id] && st.wrong > 0).sort((a, b) => (b[1].wrong - b[1].box) - (a[1].wrong - a[1].box)).slice(0, 8);
+  if (!weakSorted.length) { const tr = el("tr"); tr.appendChild(el("td", "muted", "目前沒有答錯過的字。")); wt.appendChild(tr); }
+  else {
+    const h = el("tr"); ["單字片語","意思","錯","狀態"].forEach(x => h.appendChild(el("th", "", x))); wt.appendChild(h);
+    weakSorted.forEach(([id, st]) => { const it = ITEMS[id], tr = el("tr"); tr.append(el("td", it.sent ? "w sentcell" : "w", it.a), el("td", "small", it.m), el("td", "mono", st.wrong), el("td", "small", st.box >= 3 ? "已精熟" : "複習中")); wt.appendChild(tr); });
+  }
+  // fixes
+  const fl = $("#fixList"); fl.innerHTML = "";
+  const fx = S.ai.fixes.slice(-6).reverse();
+  if (!fx.length) fl.appendChild(el("p", "muted", S.ai.chats ? "最近的對話沒有被糾正的地方。" : "還沒有進行 AI 對話。"));
+  fx.forEach(f => { const d = el("div", "fix"); d.style.marginBottom = "8px"; if (f.w) { d.appendChild(el("s", "", f.w)); d.appendChild(document.createTextNode(" → ")); } d.appendChild(el("b", "", f.r)); if (f.y) { d.appendChild(document.createElement("br")); d.appendChild(document.createTextNode(f.y)); } fl.appendChild(d); });
+  // summary
+  const cleared = SCENES.filter(s => S.scenes[s.id]?.cleared).map(s => s.zh);
+  const week = days.slice(-7).reduce((a, d) => ({q:a.q + d.q, c:a.c + d.c}), {q:0, c:0});
+  const lines = [
+    "【單字生活線 學習摘要】" + dkey().replace(/-/g, "/"),
+    "近 7 天練習 " + week.q + " 題，答對率 " + (week.q ? Math.round(week.c / week.q * 100) : 0) + "%",
+    "累計 " + T.q + " 題、練習 " + fmtMin(T.sec) + "，連續 " + streak(S) + " 天",
+    "已通過：" + (cleared.length ? cleared.join("、") : "尚無") + "（" + cleared.length + "/" + SCENES.length + "）",
+    ((S.custom || []).length ? "我的單字：" + S.custom.map(g => { const it = groupItems("c:" + g.id); const m = it.filter(x => S.stats[x.id] && S.stats[x.id].right > 0 && S.stats[x.id].box >= 3).length; return g.name + " " + m + "/" + it.length; }).join("、") : "我的單字：尚未建立"),
+    "已精熟 " + mastered + " 個，待加強 " + weak.length + " 個" + (weak.length ? "：" + weak.slice(0, 6).map(id => ITEMS[id].a).join("、") : ""),
+    "AI 對話 " + S.ai.chats + " 次，說了 " + S.ai.msgs + " 句英文",
+    "閱讀測驗 " + (S.read?.n || 0) + " 篇" + (S.read?.q ? "，答對率 " + Math.round(S.read.c / S.read.q * 100) + "%" : ""),
+    "目前 Lv." + (levelOf(S.xp) + 1) + "，" + S.xp + " XP，徽章 " + S.badges.length + "/" + BADGES.length
+  ];
+  $("#summaryBox").value = lines.join("\n");
+  $("#copyMsg").textContent = "";
+  renderSyncNote();
+  renderHeader();
+}
+function renderSyncNote(){
+  const n = $("#syncNote"); if (!n) return;
+  n.textContent = syncState === "cloud" ? "進度存在你的 Claude 帳號，只有登入同一個帳號的人看得到；換裝置登入同帳號也會同步。" : "進度存在這台裝置的瀏覽器裡。孩子和家長要在同一台裝置上開啟才看得到同一份紀錄。";
+}
+$("#copySum").onclick = () => {
+  const box = $("#summaryBox");
+  const done = () => { $("#copyMsg").textContent = "已複製"; };
+  try {
+    navigator.clipboard.writeText(box.value).then(done, () => { box.select(); $("#copyMsg").textContent = "已選取文字，請按複製"; });
+  } catch(e) { box.select(); $("#copyMsg").textContent = "已選取文字，請按複製"; }
+};
+$("#resetBtn").onclick = () => confirmBox("確定清除所有進度？", "XP、徽章、錯題本、我的單字和報表紀錄都會歸零，無法復原。", "清除", () => { S = freshState(); rebuildCustomItems(); save(); flushDb(); toast("進度已清除"); show("home"); });
+
+function renderAll(){ rebuildCustomItems(); if (view === "custom") renderCustom(); if (view === "read" && !(RD && RD.mode === "play")) renderRead(); if (view === "home") renderHome(); else if (view === "review") renderReviewHome(); else if (view === "report") renderReport(); renderHeader(); }
+if (applyPacks()) save();
+rebuildCustomItems();
+renderHome();
+})();
+</script>
+
+</body>
+</html>
